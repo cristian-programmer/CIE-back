@@ -16,9 +16,9 @@ class EvenModel {
     async create(){
         console.log(this.eventName);
         const result = await this.database.queryCommand(`INSERT INTO mydb.events 
-        (eventName, eventDescription, eventDate, eventImage)
-        values ("${this.eventName}", "${this.eventDescription}",
-         "${this.eventDate}" , "${this.eventImage}")`);
+        (eventName, eventDescription, eventDate, eventImage) values ("${this.eventName}", "${this.eventDescription}",
+         "${this.eventDate}" , "${this.eventImage}")
+         `);
     
             return result['affectedRows'] == 1 ? 'created' :  'not-created';
     }
