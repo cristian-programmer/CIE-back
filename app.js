@@ -6,7 +6,6 @@ var dotenv = require('dotenv');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var adminRouter = require('./routes/admin');
 var eventRouter = require('./routes/event');
 var serviceRouter = require('./routes/service');
 
@@ -32,7 +31,6 @@ app.use(cors);
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/admin', adminRouter);
 app.use('/event', eventRouter);
 app.use('/service', serviceRouter);
 
