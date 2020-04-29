@@ -11,7 +11,7 @@ class UserModel{
 
             if(register){
                 this.role =  this.assignRole(data.relationship);
-                this.name = data.fullName;
+                this.name = data.fullname;
                 this.email = data.email;
                 this.relationshipUniversity = data.relationship;
             }
@@ -35,8 +35,8 @@ class UserModel{
     }
 
     async getUser(username, password){
-        return await this.database.queryCommand(`SELECT * from Users where
-         username = ${username} and password = ${password}`);
+        return await this.database.queryCommand(`SELECT * from mydb.Users  WHERE
+         username = "${username}" and password = "${password}"`);
     }
 
 }

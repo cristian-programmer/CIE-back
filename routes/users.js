@@ -21,9 +21,21 @@ router.post('/createUser', async (req, res)=>{
 
 });
 
-router.post('/login', jwt.authorizeRute, (req, res, next) => {
+router.post('/login', async (req, res, next) => {
   console.log("req");
-  res.status(200).send("ok");
+  let user = new userModel();
+  response = await user.getUser(req.body.username, req.body.password);
+  if(response.length > 0) {
+    res.json({
+      result: response,
+      login: true
+    });
+
+  }else{
+    res.json({login: false});
+  }
+  console.log("req", response);
+  res.status(200);
 });
 
 module.exports = router;
