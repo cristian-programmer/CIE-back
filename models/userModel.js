@@ -39,6 +39,17 @@ class UserModel{
          username = "${username}" and password = "${password}"`);
     }
 
+    async getAllUsers(){
+        return await this.database.queryCommand(`SELECT idUsers, name, username, email, role FROM mydb.Users WHERE role != "admin"`);
+    }
+
+    async updateRole(data){
+        data = {...data};
+        const result = await this.database.queryCommand(`UPDATE mydb.Users SET role="${data.role}"
+         WHERE idUsers="${data.id}"`);
+        return result['changedRows'] == 1 ? 'edited' :  'not-edited';
+    }
+
 }
 
 module.exports = {
