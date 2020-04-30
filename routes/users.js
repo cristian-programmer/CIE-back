@@ -38,4 +38,17 @@ router.post('/login', async (req, res, next) => {
   res.status(200);
 });
 
+router.get('/admin/getAllUsers', async (req, res)=>{
+  let user = new userModel();
+  response = await user.getAllUsers();
+  res.json({result: response});
+});
+
+router.post('/admin/updateRole', async (req, res)=>{
+  console.log(req.body);
+  let user = new userModel();
+  response = await user.updateRole(req.body);
+  res.json({result: response});
+});
+
 module.exports = router;
