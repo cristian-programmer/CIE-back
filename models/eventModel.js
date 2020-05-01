@@ -34,6 +34,7 @@ class EvenModel {
     }
 
     async editEvent(id){
+        
         const result = await this.database.queryCommand(`UPDATE mydb.events SET eventName="${this.eventName}",
         eventDescription="${this.eventDescription}", eventDate="${this.eventDate}" WHERE idEvents=${id} `);
         console.log(result);

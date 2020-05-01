@@ -9,6 +9,7 @@ var usersRouter = require('./routes/users');
 var adminRouter = require('./routes/admin');
 var eventRouter = require('./routes/event');
 var serviceRouter = require('./routes/service');
+var tracingRouter = require('./routes/tracing');
 
 var app = express();
 dotenv.config();
@@ -35,5 +36,6 @@ app.use('/users', usersRouter);
 app.use('/admin', adminRouter);
 app.use('/event', eventRouter);
 app.use('/service', serviceRouter);
+app.use("/tracing", tracingRouter)
 
 module.exports = app;
