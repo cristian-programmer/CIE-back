@@ -32,4 +32,11 @@ router.post('/editEvent', async (req, res)=>{
     res.json({result: response});
 });
 
+router.post('/createAttendance', async (req, res)=>{
+    console.log(req);
+    let event = new EventModel();
+    response = await event.createAttendance(req.body);
+    res.json({result: response});
+});
+
 module.exports = router;

@@ -19,8 +19,7 @@ class EvenModel {
         (eventName, eventDescription, eventDate, eventImage) values ("${this.eventName}", "${this.eventDescription}",
          "${this.eventDate}" , "${this.eventImage}")
          `);
-    
-            return result['affectedRows'] == 1 ? 'created' :  'not-created';
+        return result['affectedRows'] == 1 ? 'created' :  'not-created';
     }
 
     async getAllEvents(){
@@ -39,6 +38,14 @@ class EvenModel {
         eventDescription="${this.eventDescription}", eventDate="${this.eventDate}" WHERE idEvents=${id} `);
         console.log(result);
         return result['changedRows'] == 1 ? 'edited' :  'not-edited';
+    }
+
+    async createAttendance(data){
+        const result = await this.database.queryCommand(`INSERT INTO mydb.Attendance (fullname, program, semester, 
+            relationshipUniversity, company, email, phoneNumber, idEvent) values ("${data.fullname}", 
+            "${data.program}", "${data.semester}", "${data.relationship}", "${data.company}",
+            "${data.email}", "${data.phoneNumer}", "${data.idEvent}")`);
+            return result['affectedRows'] == 1 ? 'created' :  'not-created';
     }
 
 

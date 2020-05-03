@@ -5,13 +5,6 @@ const userModel = require('../models/userModel').UserModel;
 const jwt = new JsonWebToken();
 
 
-router.post('/auth-token', (req, res, next) => {
-  const userdata  = { user: req.body.user, password: req.body.password };
-  const token = jwt.createSign(userdata, process.env.TOKEN , {expiresIn: 1440});
-  res.json({token : token});
-});
-
-
 router.post('/createUser', async (req, res)=>{
   console.log(req.body);
   register = true;
@@ -21,16 +14,19 @@ router.post('/createUser', async (req, res)=>{
 
 });
 
-router.post('/login', async (req, res, next) => {
-  console.log("req");
+router.post('/login', async (req, res) => {
+
   let user = new userModel();
   response = await user.getUser(req.body.username, req.body.password);
   if(response.length > 0) {
+    const userdata  = { user: req.body.username, password: req.body.password };
+    const token = jwt.createSign(userdata, process.env.TOKEN , {expiresIn: 1440});
     res.json({
       result: response,
-      login: true
+      login: true,
+      token: token
     });
-
+    
   }else{
     res.json({login: false});
   }

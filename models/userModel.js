@@ -29,7 +29,7 @@ class UserModel{
         console.log(this.role);
      const result = await this.database.queryCommand(`INSERT INTO mydb.Users
       (name, email, username, password,  relationshipUniversity, role) values ("${this.name}", "${this.email}", 
-            "${this.username}", ${this.password}, "${this.relationshipUniversity}", "${this.role}")`);
+            "${this.username}", "${this.password}", "${this.relationshipUniversity}", "${this.role}")`);
 
         return result['affectedRows'] == 1 ? 'created' :  'not-created';
     }
