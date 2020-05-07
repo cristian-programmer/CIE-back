@@ -26,7 +26,6 @@ router.post('/deleteEvent', async (req, res)=>{
 });
 
 router.post('/editEvent', async (req, res)=>{
-    console.log("jjjj",req.body);
     let event = new EventModel(req.body);
     response = await event.editEvent(req.body.id);
     res.json({result: response});

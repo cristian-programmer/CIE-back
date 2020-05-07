@@ -9,6 +9,8 @@ router.get('/getProjects', async (req, res) =>{
 });
 
 router.post('/createProject', async (req, res) =>{
+    console.log("asesor", req.body.nameAsesor);
+    
     let project = new ProjectModel(req.body);
     response = await project.create();
     res.json({result: response});
@@ -35,8 +37,19 @@ router.get('/getParticipans', async (req, res)=>{
 
 });
 
-router.post('/editProject', async(req, res) =>{
+router.post('/deleteProject', async (req, res)=>{
+    console.log(req.body.id);
+    let proyect = new ProjectModel();
+    response = await proyect.deleteProject(req.body.id);
+    res.json({result: response});
+});
 
+router.post('/editProject', async (req, res)=>{
+    console.log(req.body);
+    
+    let project = new ProjectModel(req.body);
+    response = await project.editProject(req.body.id);
+    res.json({result: response});
 });
 
 module.exports =  router;
