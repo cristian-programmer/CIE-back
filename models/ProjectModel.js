@@ -10,8 +10,8 @@ class ProjectModel {
         if(data != undefined) {
             this.projectName = data.nameProyect;
             this.currentAdvisor = data.nameAsesor;
-            this.previusAdvisers = data.tagsAdvisers;
-            this.methodologicalPhases = data.methodologicalPhases;
+            this.previusAdvisers = data.previusAdvisers;
+            this.methodologicalPhases = data.tagsmethodologies;
             this.entrepreneurs = data.tagsEntrepreneurs;
         }
         
