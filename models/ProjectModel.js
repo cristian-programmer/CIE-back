@@ -50,8 +50,9 @@ class ProjectModel {
         console.log(result);
         return result['changedRows'] == 1 ? 'edited' :  'not-edited';
     }
-    validate(){
 
+    async getProjectById(id){
+        return await this.database.queryCommand(`SELECT * FROM mydb.projects WHERE idProject=${id}`);
     }
 
 }

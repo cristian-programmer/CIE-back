@@ -10,6 +10,7 @@ var eventRouter = require('./routes/event');
 var serviceRouter = require('./routes/service');
 var tracingRouter = require('./routes/tracing');
 var projectRouter = require('./routes/project');
+var ConfigRouter = require('./routes/config');
 
 var app = express();
 dotenv.config();
@@ -37,5 +38,6 @@ app.use('/event', eventRouter);
 app.use('/service', serviceRouter);
 app.use('/tracing', tracingRouter);
 app.use('/project', projectRouter);
+app.use('/config', ConfigRouter);
 
 module.exports = app;

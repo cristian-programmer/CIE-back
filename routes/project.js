@@ -17,6 +17,13 @@ router.post('/createProject', async (req, res) =>{
 
 });
 
+router.get('/getProject', async (req, res)=>{
+    let project = new ProjectModel();
+    console.log(req.query.id);
+    response = await project.getProjectById(req.query.id);
+    res.json({result: response});
+});
+
 router.get('/getParticipans', async (req, res)=>{
     console.log("participans ", req.query.id);
     let project = new ProjectModel();
