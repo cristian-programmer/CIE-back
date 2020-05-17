@@ -33,6 +33,10 @@ class Configuration {
         return result['changedRows'] == 1 ? 'edited' :  'not-edited';
     }
 
+    async getModulesByRole(data){
+        return await this.database.queryCommand(`SELECT * FROM mydb.SystemModules WHERE role="${data}"`);
+    }
+
 }
 
 

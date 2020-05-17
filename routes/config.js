@@ -43,6 +43,13 @@ router.post('/updateVisible', async (req, res)=>{
     res.json({result: response});
 });
 
+router.get('/getModulesByRole', async (req, res)=>{
+  
+    let config = new ConfigurationModel();
+    response = await config.getModulesByRole(req.query.role);
+    res.json({result: response});
+});
+
 
 module.exports = router;
 

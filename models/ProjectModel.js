@@ -3,16 +3,30 @@ const Database = require('../infrastructure/ManagerConnection').Connection;
 
 class ProjectModel {
 
-    constructor(data){
+    constructor(data, type){
 
         this.database = new Database();
         this.database.getConection();
+        console.log(data, " ", type);
         if(data != undefined) {
-            this.projectName = data.nameProyect;
-            this.currentAdvisor = data.nameAsesor;
-            this.previusAdvisers = data.tagsAdvisers;
-            this.methodologicalPhases = data.methodologicalPhases;
-            this.entrepreneurs = data.tagsEntrepreneurs;
+            if(type == 'project') {
+                
+                this.projectName = data.nameProyect;
+                this.currentAdvisor = data.nameAsesor;
+                this.previusAdvisers = data.tagsAdvisers;
+                this.methodologicalPhases = data.tagsmethodologies;
+                this.entrepreneurs = data.tagsEntrepreneurs;
+
+            }else if (type == 'activity'){
+                console.log("data", data);
+                this.nameActivity = data.nameActivity;
+                this.responsables = data.responsables;
+                this.state = data.state;
+                this.executionWeek = 1;
+                this.phase = data.phase;
+                this.id = data.id;
+
+            }
         }
         
     }
@@ -53,6 +67,25 @@ class ProjectModel {
 
     async getProjectById(id){
         return await this.database.queryCommand(`SELECT * FROM mydb.projects WHERE idProject=${id}`);
+    }
+
+    async getActiviesByProject(id, phase){
+        console.log(id, " ", phase);
+        return await this.database.queryCommand(`SELECT * FROM mydb.activities WHERE 
+        idProject=${id} and phase="${phase}"`);
+
+    }
+
+    async createActivityByProject(){
+        const result =  await this.database.queryCommand(`INSERT INTO mydb.activities 
+        (nameActivity, responsables, state, executionWeek, phase, idProject) values ("${this.nameActivity}",
+       "${this.responsables}", "${this.state}", ${this.executionWeek}, "${this.phase}", ${this.id})`);
+
+        return result['affectedRows'] == 1 ? 'created' :  'not-created';
+    }
+
+    createResource(){
+
     }
 
 }

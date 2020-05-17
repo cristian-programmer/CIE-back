@@ -24,9 +24,12 @@ class Connection {
 
     queryCommand(sql){
         let connectioncopy = this.connection;
+
         return new Promise(function(resolve, reject){
             connectioncopy.query(sql, function(err, result){
                 if(err) reject(err);
+                connectioncopy.end();
+                
                 resolve(result);
             });
         });
