@@ -25,10 +25,8 @@ class ProjectModel {
                 this.executionWeek = 1;
                 this.phase = data.phase;
                 this.id = data.id;
-
             }
         }
-        
     }
 
     async getListProject(){
