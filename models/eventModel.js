@@ -1,15 +1,16 @@
 const Database = require('../infrastructure/ManagerConnection').Connection;
 
 class EvenModel {
-    constructor(data, operation){
+    constructor(data, type){
         this.database = new Database();
         this.database.getConection();
 
         if(data != undefined){
-            this.eventName =  data.nameEvent;
-            this.eventDescription = data.description;
-            this.eventDate =  data.date;
-            this.eventImage = "path/falsy";
+            
+                this.eventName =  data.nameEvent;
+                this.eventDescription = data.description;
+                this.eventDate =  data.date;
+                this.eventImage = "path/falsy";
         }
     }
 
@@ -48,7 +49,29 @@ class EvenModel {
             return result['affectedRows'] == 1 ? 'created' :  'not-created';
     }
 
+    async createEventStatistics(data){
+        const result = await this.database.queryCommand(`INSERT INTO mydb.eventStatistics (numberRegistered, numberAttendees, idEvent) 
+            values (${0}, ${0}, ${data.idEvent})`);
+            return result['affectedRows'] == 1 ? 'created' :  'not-created'; 
+    }
 
+    async getNumberByEvent(id, type){
+        return await this.database.queryCommand(`SELECT ${type == 1 ? 'numberRegistered' : 'numberAttendees'}  FROM mydb.eventStatistics
+            WHERE idEvent=${id}`);
+    }
+
+    async updateEventStatics(counter, id, type){
+       
+        const result = await this.database.queryCommand(`UPDATE mydb.eventStatistics
+            SET ${type== 1 ? 'numberRegistered': 'numberAttendees'}=${counter}
+            WHERE idEvent=${id} `);
+           console.log(result);
+           return result['changedRows'] == 1 ? 'edited' :  'not-edited';
+    }
+
+    closeConectionBD(){
+        this.database.closeConnection();
+    }
 }
 
 module.exports = {

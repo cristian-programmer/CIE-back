@@ -25,4 +25,12 @@ router.post('/updateAttendance', async (req, res)=>{
     res.json({result: response});
 });
 
+router.post('/updateAttended', async (req, res) =>{
+    let attendance = new TracingModel();
+    response = await attendance.updateAttended(req.body.id, req.body.attended);
+    res.json({
+        result: response
+    })
+});
+
 module.exports = router;

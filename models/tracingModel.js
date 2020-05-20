@@ -18,13 +18,24 @@ class  TracingModel{
 
    async getAllEvents(){
     return await this.database.queryCommand(`SELECT * FROM mydb.events`);
-}
+    }
 
-async updateAttendance(id){    
-    const result = await this.database.queryCommand(`UPDATE mydb.attendance SET confirmedAssistance ="${this.confirmedAssistance}" WHERE idattendance=${id} `);
-    console.log(result);
+    async updateAttendance(id){    
+        const result = await this.database.queryCommand(`UPDATE mydb.attendance SET confirmedAssistance ="${this.confirmedAssistance}" WHERE idattendance=${id} `);
+        console.log(result);
 
-}
+    }
+
+    async updateAttended(id, attend){
+        const result = await this.database.queryCommand(`UPDATE mydb.attendance SET attended=${attend}
+        WHERE idEvent=${id} `);
+        console.log(result);
+        return result['changedRows'] == 1 ? 'edited' :  'not-edited';
+    }
+
+    async countAttendend(){
+        return await this.database.queryCommand(`SELECT COUNT(*) FROM mydb.attendance WHERE attended =1`)
+    }
 
 }
 

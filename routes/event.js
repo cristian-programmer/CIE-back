@@ -3,6 +3,7 @@ let router = app.Router();
 
 const EventModel = require('./../models/eventModel').EvenModel;
 
+
 router.post('/createEvent',async (req, res)=>{
     console.log(req.body);
     console.log(req.body.date);
@@ -38,4 +39,22 @@ router.post('/createAttendance', async (req, res)=>{
     res.json({result: response});
 });
 
+router.post('/createEventStatistics', async (req, res)=>{
+    let event = new EventModel();
+    response = await event.createEventStatistics(req.body);
+    res.json({result: response});
+});
+
+router.post('/updateEventStatistics', async (req, res)=>{
+    let event = new EventModel();
+    number = await event.getNumberByEvent(req.body.id, req.body.type);
+    console.log(number);
+    number =  (req.body.type == 1) ? number[0].numberRegistered : number[0].numberAttendees; 
+    number = number + Number(req.body.count);
+    response = await event.updateEventStatics(number, req.body.id, req.body.type);
+    event.closeConectionBD();
+    res.json({
+        result: response
+    });
+});
 module.exports = router;
