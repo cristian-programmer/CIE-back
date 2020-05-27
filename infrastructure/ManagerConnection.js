@@ -1,5 +1,6 @@
 const clientmysql = require('mysql');
 
+let __connection_close = null;
 class Connection {
 
     constructor(){
@@ -28,7 +29,7 @@ class Connection {
         return new Promise(function(resolve, reject){
             connectioncopy.query(sql, function(err, result){
                 if(err) reject(err);
-                connectioncopy.end();
+                __connection_close = connectioncopy;
                 
                 resolve(result);
             });
@@ -42,7 +43,7 @@ class Connection {
     }
 
     closeConnection(){
-        this.connection.close();
+        __connection_close.end();
     } 
 }
 
