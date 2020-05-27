@@ -18,9 +18,13 @@ class EvenModel {
         console.log(this.eventName);
         const result = await this.database.queryCommand(`INSERT INTO mydb.events 
         (eventName, eventDescription, eventDate, eventImage) values ("${this.eventName}", "${this.eventDescription}",
-         "${this.eventDate}" , "${this.eventImage}")
-         `);
+         "${this.eventDate}" , "${this.eventImage}")`);
         return result['affectedRows'] == 1 ? 'created' :  'not-created';
+    }
+
+    async getLastInsertId(){
+        return await this.database.queryCommand(`SELECT idEvents FROM mydb.events 
+            ORDER BY idEvents DESC LIMIT 1 `); 
     }
 
     async getAllEvents(){
@@ -49,9 +53,9 @@ class EvenModel {
             return result['affectedRows'] == 1 ? 'created' :  'not-created';
     }
 
-    async createEventStatistics(data){
+    async createEventStatistics(idEvent){
         const result = await this.database.queryCommand(`INSERT INTO mydb.eventStatistics (numberRegistered, numberAttendees, idEvent) 
-            values (${0}, ${0}, ${data.idEvent})`);
+            values (${0}, ${0}, ${idEvent})`);
             return result['affectedRows'] == 1 ? 'created' :  'not-created'; 
     }
 
@@ -67,6 +71,15 @@ class EvenModel {
             WHERE idEvent=${id} `);
            console.log(result);
            return result['changedRows'] == 1 ? 'edited' :  'not-edited';
+    }
+
+    async getEventById(idEvent){
+        return await this.database.queryCommand(`SELECT eventName, eventDate FROM mydb.events 
+        WHERE idEvents=${idEvent}`);
+    }
+
+    async getEventStatistcs(){
+        return await this.database.queryCommand(`SELECT * FROM mydb.eventStatistics ORDER BY idEventStatistics DESC LIMIT 3`);
     }
 
     closeConectionBD(){

@@ -37,6 +37,17 @@ class  TracingModel{
         return await this.database.queryCommand(`SELECT COUNT(*) FROM mydb.attendance WHERE attended =1`)
     }
 
+    async getLastActivitySystem(idUser){
+        return await this.database.queryCommand(`SELECT * FROM mydb.lastActivitySystem WHERE idUser=${idUser}`);
+    }
+
+    async createLastActivitySystem(data){
+        const hour =  `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}` 
+        const result = await this.database.queryCommand(`INSERT INTO mydb.lastActivitySystem (idUser, activity, date, hour)
+             values (${data.idUser}, "${data.activity}", "${new Date().toLocaleDateString()}", "${hour}")`);
+        
+        return result['affectedRows'] == 1 ? 'created' :  'not-created';
+    }
 }
 
     module.exports = {

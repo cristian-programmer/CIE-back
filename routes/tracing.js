@@ -33,4 +33,18 @@ router.post('/updateAttended', async (req, res) =>{
     })
 });
 
+router.get('/getLastActivitySystem', async (req, res)=>{
+    let tracing = new TracingModel();
+    response = await tracing.getLastActivitySystem(req.query.idUser);
+    res.json({result: response});
+});
+
+router.post('/createLastActivitySystem', async (req, res)=>{
+  
+    let tracing = new TracingModel();
+    response =  await tracing.createLastActivitySystem(req.body);
+    console.log(response);
+    res.json({result:response});
+});
+
 module.exports = router;
