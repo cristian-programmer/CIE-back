@@ -112,16 +112,22 @@ class StructureDB {
 
 
     createTableSystemModules(){
-        this.database.queryCommand(`CREATE TABLE IF NOT EXISTS mydb.SystemModules (
-            idSystemModules INT NOT NULL AUTO_INCREMENT,
-            nameModule VARCHAR(45) NOT NULL,
-            role VARCHAR(45) NOT NULL,
-            route VARCHAR(45) NOT NULL,
-            active TINYINT NOT NULL,
-            icon VARCHAR(45) NULL,
-            PRIMARY KEY (idSystemModules))`).then(res =>{ console.info('create table systemModules')})
-        .catch(error =>{console.error(error)})
-        
+        return new Promise( (resolve, reject) =>{
+            this.database.queryCommand(`CREATE TABLE IF NOT EXISTS mydb.SystemModules (
+                idSystemModules INT NOT NULL AUTO_INCREMENT,
+                nameModule VARCHAR(45) NOT NULL,
+                role VARCHAR(45) NOT NULL,
+                route VARCHAR(45) NOT NULL,
+                active TINYINT NOT NULL,
+                icon VARCHAR(45) NULL,
+                PRIMARY KEY (idSystemModules))`).then(res =>{ 
+                    console.info('create table systemModules, ', res['warningCount']);
+                    resolve(res);
+                }).catch(error =>{
+                    console.error(error);
+                    reject(error);
+                })
+        });
     }
 
     createTableLastActivitySystem(){
@@ -174,6 +180,28 @@ class StructureDB {
 
     }
 
+    insertModules(){
+        this.database.queryCommand(`INSERT INTO mydb.SystemModules (nameModule, role, route, active)
+        values ('Inicio', 'assistant', '/admin',  1),
+         ('Gestion de proyectos', 'adviser', '/admin/management',  1),
+         ('Eventos', 'assistant', '/admin/events',  1),
+         ('Servicios', 'assistant', '/admin/services',  1),
+         ('Seguimiento', 'assistant', '/admin/tracing',  1),
+         ('Calendario', 'assistant', '/admin/calendar',  1),
+         ('Calendario', 'entrepreneur', '/admin/calendar',  1),
+         ('Calendario', 'adviser', '/admin/calendar',  1),
+         ('Gestion de Proyectos', 'entrepreneur', '/admin/management',  1),
+         ('Configuracion', 'admin', '/admin/config',  1),
+         ('Config de Proyectos', 'adviser', '/admin/proyect',  1),
+         ('Trazabilidad de eventos', 'assistant', '/admin/eventTraceability',  1),
+         ('Asistencia', 'assistant', '/admin/assistance',  1)
+       `).then(res =>{
+           console.info('create routers of the modules');
+       }).catch(error=>{
+           console.error(error);
+       })
+    }
+
     createAll(){
         this.createTableUsers();
         this.createTableServices();
@@ -183,7 +211,12 @@ class StructureDB {
         this.createTableActivities();
         this.createTableConfiguration();
         this.createTableSocialNetwork();
-        this.createTableSystemModules();
+        this.createTableSystemModules().then( res =>{
+            if(res['warningCount'] == 0) {
+                this.insertModules();
+            }
+    
+        });
         this.createTableLastActivitySystem();
         this.createTableEventStatistics();
         this.createTableMeeting();
