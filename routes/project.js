@@ -54,9 +54,9 @@ router.post('/deleteProject', async (req, res)=>{
 });
 
 router.post('/editProject', async (req, res)=>{
-    console.log(req.body);
+    console.log("request",req.body);
     
-    let project = new ProjectModel(req.body);
+    let project = new ProjectModel(req.body,t_project);
     response = await project.editProject(req.body.id);
     res.json({result: response});
 });
