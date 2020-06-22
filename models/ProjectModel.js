@@ -86,6 +86,10 @@ class ProjectModel {
 
     }
 
+    async getAllParticipants(){
+        return await this.database.queryCommand(`SELECT entrepreneurs, currentAdvisor, projectName FROM mydb.projects`)
+    }
+
 }
 
 module.exports = {

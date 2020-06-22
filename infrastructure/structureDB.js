@@ -12,17 +12,28 @@ class StructureDB {
     }
 
     createTableUsers() {
-        this.database.queryCommand(`CREATE TABLE IF NOT EXISTS ${NAMEDB}.Users (
-            idUsers INT NOT NULL AUTO_INCREMENT,
-            name VARCHAR(45) NOT NULL,
-            email VARCHAR(200) NOT NULL,
-            username VARCHAR(45) NOT NULL,
-            role VARCHAR(45) NULL,
-            privilege VARCHAR(45) NULL,
-            relationshipUniversity VARCHAR(45) NOT NULL,
-            password VARCHAR(200) NOT NULL,
-            PRIMARY KEY (idUsers))`).then(res =>{ console.info('create table users')})
-            .catch(error => console.error(error));
+        return new Promise((resolve, reject)=>{
+            this.database.queryCommand(`CREATE TABLE IF NOT EXISTS ${NAMEDB}.Users (
+                idUsers INT NOT NULL AUTO_INCREMENT,
+                name VARCHAR(45) NOT NULL,
+                email VARCHAR(200) NOT NULL,
+                username VARCHAR(45) NOT NULL,
+                role VARCHAR(45) NULL,
+                privilege VARCHAR(45) NULL,
+                relationshipUniversity VARCHAR(45) NOT NULL,
+                password VARCHAR(200) NOT NULL,
+                phone VARCHAR(100) NULL,
+                mobile VARCHAR(100) NULL,
+                image VARCHAR(120) NULL,
+                PRIMARY KEY (idUsers))`).then(res =>{ 
+                    console.info('create table users');
+                    resolve(res);
+                })
+                .catch(error => {
+                    console.error(error);
+                    reject(error);
+                });
+        });
     }
 
     createTableServices(){
@@ -202,8 +213,24 @@ class StructureDB {
        })
     }
 
+    insertDefaultUsers(){
+        this.database.queryCommand(`INSERT INTO mydb.Users (name, email, username, role, 
+            relationshipUniversity, password) value ('administador', 'cvg97@misena.edu.co', 'admin', 'administrator', 
+            'teacher', 'system1'), 
+            ('asesor', 'cvg97@misena.edu.co', 'asesor', 'adviser', 
+            'teacher', 'system1')`).then(res =>{
+                console.info('create users by default');
+            }).catch(error =>{
+                console.error(error);
+            });
+    }
+
     createAll(){
-        this.createTableUsers();
+        this.createTableUsers().then(res=>{
+            if(res['warningCount']  == 0){
+                this.insertDefaultUsers();
+            }
+        });
         this.createTableServices();
         this.createTableEvents();
         this.createTableAttendance();
@@ -215,7 +242,6 @@ class StructureDB {
             if(res['warningCount'] == 0) {
                 this.insertModules();
             }
-    
         });
         this.createTableLastActivitySystem();
         this.createTableEventStatistics();

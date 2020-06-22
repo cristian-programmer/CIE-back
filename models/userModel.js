@@ -50,6 +50,25 @@ class UserModel{
         return result['changedRows'] == 1 ? 'edited' :  'not-edited';
     }
 
+
+    async updateProfileImage(data){
+        const result = await this.database.queryCommand(`UPDATE mydb.Users SET image='${data.path}'
+        WHERE idUsers="${data.id}"`);
+        return result['changedRows'] == 1 ? 'edited' : 'not-edited';
+    }
+
+    async getUserById(id){
+        return await this.database.queryCommand(`SELECT name, email, username, role,
+         relationshipUniversity, phone, mobile, image FROM mydb.Users WHERE idUsers=${id}`);
+    }
+
+    async editUser(data){
+        const result = await this.database.queryCommand(`UPDATE mydb.Users SET name="${data.name}", 
+        email="${data.email}", username="${data.username}", phone="${data.phone}", mobile="${data.mobile}" 
+        WHERE idUsers=${data.id}`);
+        return result['changedRows'] == 1 ? 'edited': 'not-edited';
+    }
+
 }
 
 module.exports = {
