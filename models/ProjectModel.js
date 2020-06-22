@@ -7,7 +7,7 @@ class ProjectModel {
 
         this.database = new Database();
         this.database.getConection();
-        console.log(data, " ", type);
+        console.log("dataaaaaa",   data, " ", type);
         if(data != undefined) {
             if(type == 'project') {
                 
