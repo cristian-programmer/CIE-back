@@ -3,10 +3,15 @@ var router = express.Router();
 const JsonWebToken = require('./../controllers/JsonWebToken').JsonWebToken;
 const userModel = require('../models/userModel').UserModel;
 const projectModel = require('../models/ProjectModel').ProjectModel;
+const managerFilesServer = require('../infrastructure/ManagerFilesServer').ManagerFileServer;
+
 const PORTCLIENT = 3000;
 
 const jwt = new JsonWebToken();
 const multer = require('multer');
+const manager = new managerFilesServer();
+
+manager.saveProfileUser();
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -75,7 +80,7 @@ router.post('/writeIdProfile', (req, res) =>{
     result: 'assigned'
   });
 });
-router.post('/uploadProfile', upload.single('profile'),  async (req, res)=>{
+router.post('/uploadProfile', manager.middleware().single('profile'),  async (req, res)=>{
   console.log(req.body);
   let user = new userModel();
   console.log('path', req.file.path);
