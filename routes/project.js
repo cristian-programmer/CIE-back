@@ -4,10 +4,20 @@ const ProjectModel = require('./../models/ProjectModel').ProjectModel;
 
 const t_project='project', t_activity="activity";
 
+router.get('/getEntrepreneurs', async (req, res) =>{
+    let Entre = new ProjectModel();
+     response = await Entre.getAllEntre();
+     res.json({result: response});
+     console.log("aaaaa", response);
+     
+ });
+
 router.get('/getProjects', async (req, res) =>{
    let project = new ProjectModel();
     response = await project.getListProject();
     res.json({result: response});
+    console.log("iiiiiii", response);
+    
 });
 
 router.post('/createProject', async (req, res) =>{

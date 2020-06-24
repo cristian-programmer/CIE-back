@@ -15,7 +15,7 @@ class ProjectModel {
                 this.currentAdvisor = data.nameAsesor;
                 this.previusAdvisers = data.tagsAdvisers;
                 this.methodologicalPhases = data.tagsmethodologies;
-                this.entrepreneurs = data.tagsEntrepreneurs;
+                this.entrepreneurs = data.value;
 
             }else if (type == 'activity'){
                 console.log("data", data);
@@ -27,6 +27,10 @@ class ProjectModel {
                 this.id = data.id;
             }
         }
+    }
+
+    async getAllEntre(){
+        return await this.database.queryCommand(`SELECT * FROM mydb.users WHERE role="entrepreneur"`);
     }
 
     async getListProject(){
@@ -81,6 +85,8 @@ class ProjectModel {
 
         return result['affectedRows'] == 1 ? 'created' :  'not-created';
     }
+
+    
 
     createResource(){
 
