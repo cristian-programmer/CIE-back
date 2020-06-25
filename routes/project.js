@@ -14,13 +14,6 @@ router.get('/getEntrepreneurs', async (req, res) =>{
  });
 
 router.get('/getProjects', async (req, res) =>{
-<<<<<<< HEAD
-   let project = new ProjectModel();
-    response = await project.getListProject();
-    res.json({result: response});
-    console.log("iiiiiii", response);
-    
-=======
    const project = new ProjectModel();
    const typeUser =  req.query.type;
    const name = req.query.name;
@@ -44,7 +37,6 @@ router.get('/getProjects', async (req, res) =>{
         }
    }
    
->>>>>>> Algunos cambios
 });
 
 router.post('/createProject', async (req, res) =>{
