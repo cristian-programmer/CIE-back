@@ -13,13 +13,20 @@ var tracingRouter = require('./routes/tracing');
 var projectRouter = require('./routes/project');
 var ConfigRouter = require('./routes/config');
 var StructureDB = require('./infrastructure/structureDB').StructureDB;
+var SocketServer = require('./infrastructure/SocketServer').SocketServer;
 
-console.info('Init Server PORT', process.env.PORT);
+console.info('Init Server PORT ', process.env.PORT);
 
 const structureDB =  new StructureDB();
+const sockServer = new SocketServer();
+sockServer.socketServerOn();
+
 structureDB.createAll();
+
 var app = express();
 dotenv.config();
+
+   
 
 function cors(req, res, next){
     res.header('Access-Control-Allow-Origin', '*');
