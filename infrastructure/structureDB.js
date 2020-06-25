@@ -202,7 +202,7 @@ class StructureDB {
          ('Calendario', 'entrepreneur', '/admin/calendar',  1),
          ('Calendario', 'adviser', '/admin/calendar',  1),
          ('Gestion de Proyectos', 'entrepreneur', '/admin/management',  1),
-         ('Configuracion', 'admin', '/admin/config',  1),
+         ('Configuracion', 'administrator', '/admin/config',  1),
          ('Config de Proyectos', 'adviser', '/admin/proyect',  1),
          ('Trazabilidad de eventos', 'assistant', '/admin/eventTraceability',  1),
          ('Asistencia', 'assistant', '/admin/assistance',  1)

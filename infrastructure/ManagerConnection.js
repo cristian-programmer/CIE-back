@@ -20,7 +20,7 @@ class Connection {
             port: this.port
         });
 
-        console.log('connection to mysql');
+        console.info('create connection to BD');
     }
 
     queryCommand(sql){

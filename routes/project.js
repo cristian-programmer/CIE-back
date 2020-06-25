@@ -1,4 +1,5 @@
 let app = require('express');
+const { response } = require('express');
 let router = app.Router();
 const ProjectModel = require('./../models/ProjectModel').ProjectModel;
 
@@ -13,18 +14,44 @@ router.get('/getEntrepreneurs', async (req, res) =>{
  });
 
 router.get('/getProjects', async (req, res) =>{
+<<<<<<< HEAD
    let project = new ProjectModel();
     response = await project.getListProject();
     res.json({result: response});
     console.log("iiiiiii", response);
     
+=======
+   const project = new ProjectModel();
+   const typeUser =  req.query.type;
+   const name = req.query.name;
+
+   let response = [];
+   if(typeUser == 'adviser'){
+        try {
+            response = await project.getPorjectsByCurrentAvisor(name);
+            res.json({result: response});
+        } catch (error) {
+            console.log(error);
+        }
+   }else {
+        try {
+            response = await project.getAllProjects();
+            res.json({
+                result: response
+            });
+        } catch  (error) {
+            console.log(error);
+        }
+   }
+   
+>>>>>>> Algunos cambios
 });
 
 router.post('/createProject', async (req, res) =>{
     console.log("asesor", req.body.nameAsesor);
     
-    let project = new ProjectModel(req.body, t_project);
-    response = await project.create();
+    const project = new ProjectModel(req.body, t_project);
+    const response = await project.create();
     res.json({result: response});
 
 });
@@ -32,20 +59,25 @@ router.post('/createProject', async (req, res) =>{
 router.get('/getProject', async (req, res)=>{
     let project = new ProjectModel();
     console.log(req.query.id);
-    response = await project.getProjectById(req.query.id);
+    const response = await project.getProjectById(req.query.id);
     res.json({result: response});
 });
 
 router.get('/getParticipans', async (req, res)=>{
     console.log("participans ", req.query.id);
-    let project = new ProjectModel();
+    const  project = new ProjectModel();
     let names = [];
-    response = await project.getParticipans(req.query.id);
-    entrepreneurs = response[0].entrepreneurs.split(',');
-    
+    let response = await project.getParticipans(req.query.id);
+    let entrepreneurs = response[0].entrepreneurs.split(',');
+    console.log(entrepreneurs);
     for(let i=0; i < entrepreneurs.length; i++){
-        nameshort = entrepreneurs[i].split(" ")[0].substring(0,1);
-        nameshort = (nameshort + entrepreneurs[i].split(" ")[1].substring(0,1));
+        if( entrepreneurs[i].split(" ").length > 1){
+            nameshort = entrepreneurs[i].split(" ")[0].substring(0,1);
+            nameshort = (nameshort + entrepreneurs[i].split(" ")[1].substring(0,1));
+        }else {
+            nameshort = entrepreneurs[i].split("")[0];
+        }
+       
         names.push({
             name: entrepreneurs[i],
             nameshort: nameshort
@@ -58,8 +90,8 @@ router.get('/getParticipans', async (req, res)=>{
 
 router.post('/deleteProject', async (req, res)=>{
     console.log(req.body.id);
-    let proyect = new ProjectModel();
-    response = await proyect.deleteProject(req.body.id);
+    const  proyect = new ProjectModel();
+    const response = await proyect.deleteProject(req.body.id);
     res.json({result: response});
 });
 
@@ -75,7 +107,7 @@ router.get('/getActivityByProjectAndPhase', async (req, res )=>{
     let project = new ProjectModel();
     let activities = [];
     let names = [];
-    response = await project.getActiviesByProject(req.query.id, req.query.phase);
+    const response = await project.getActiviesByProject(req.query.id, req.query.phase);
     console.log(response);
     if(response.length > 0){
         let nameshort='';  
@@ -107,8 +139,8 @@ router.get('/getActivityByProjectAndPhase', async (req, res )=>{
 });
 
 router.post('/createActivity', async (req, res)=>{
-    let project = new ProjectModel(req.body, t_activity);
-    response = await project.createActivityByProject();
+    const project = new ProjectModel(req.body, t_activity);
+    const response = await project.createActivityByProject();
     res.json({result: response});
 });
 

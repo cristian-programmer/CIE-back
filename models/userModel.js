@@ -21,7 +21,7 @@ class UserModel{
 
     assignRole(relationship){
         return ( relationship == 'graduate' || 
-        relationship == 'entrepreneur' || relationship == 'other') ?
+        relationship == 'student' || relationship == 'other') ?
          'entrepreneur' : 'role-pending';
     }
 
