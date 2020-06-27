@@ -24,12 +24,16 @@ class ProjectModel {
                 this.nameActivity = data.nameActivity;
                 this.responsables = data.responsables;
                 this.state = data.state;
-                this.executionWeek = 1;
+                this.executionWeek = data.week;
                 this.phase = data.phase;
                 this.id = data.id;
             }
         }
     }
+    async getAllEntre(){         
+        return await this.database.queryCommand(`SELECT * FROM mydb.users 
+        WHERE role="entrepreneur"`);    
+     }
 
     async getAllProjects(){
         return await this.database.queryCommand(`SELECT * FROM mydb.projects`)   
@@ -91,12 +95,11 @@ class ProjectModel {
     async createActivityByProject(){
         const result =  await this.database.queryCommand(`INSERT INTO mydb.activities 
         (nameActivity, responsables, state, executionWeek, phase, idProject) values ("${this.nameActivity}",
-       "${this.responsables}", "${this.state}", ${this.executionWeek}, "${this.phase}", ${this.id})`);
+       "${this.responsables}", "${this.state}", "${this.executionWeek}", "${this.phase}", ${this.id})`);
 
         return result['affectedRows'] == 1 ? 'created' :  'not-created';
     }
 
-    
 
     createResource(){
 
@@ -104,6 +107,16 @@ class ProjectModel {
 
     async getAllParticipants(){
         return await this.database.queryCommand(`SELECT entrepreneurs, currentAdvisor, projectName FROM mydb.projects`)
+    }
+
+    async getActivitiesByPhase(phase){
+       return await this.database.queryCommand(`SELECT * from mydb.activities WHERE phase="${phase}"`);
+    }
+
+    async updateIdComments(data){
+        const result = this.database.queryCommand(`UPDATE mydb.projects SET idComments=${data.idComment}
+         WHERE idActivities=${data.idActivity}`);
+         return result['changedRows'] == 1 ? 'edited' :  'not-edited';
     }
 
 }

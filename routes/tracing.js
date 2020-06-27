@@ -27,6 +27,7 @@ router.post('/updateAttendance', async (req, res)=>{
 
 router.post('/updateAttended', async (req, res) =>{
     let attendance = new TracingModel();
+    console.info("state: ", req.body.attended, "id: ", req.body.id);
     response = await attendance.updateAttended(req.body.id, req.body.attended);
     res.json({
         result: response

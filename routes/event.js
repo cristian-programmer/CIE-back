@@ -2,6 +2,10 @@ let app = require('express');
 let router = app.Router();
 
 const EventModel = require('./../models/eventModel').EvenModel;
+const FileServer = require('../infrastructure/ManagerFilesServer').ManagerFileServer;
+
+const fileServer =  new FileServer();
+fileServer.saveFileInPathPublic();
 
 
 router.post('/createEvent',async (req, res)=>{
@@ -50,14 +54,18 @@ router.post('/createEventStatistics', async (req, res)=>{
 router.post('/updateEventStatistics', async (req, res)=>{
     let event = new EventModel();
     number = await event.getNumberByEvent(req.body.id, req.body.type);
-    console.log(number);
-    number =  (req.body.type == 1) ? number[0].numberRegistered : number[0].numberAttendees; 
-    number = number + Number(req.body.count);
-    response = await event.updateEventStatics(number, req.body.id, req.body.type);
-    event.closeConectionBD();
-    res.json({
-        result: response
-    });
+    console.log("number", number);
+    if(number.length > 0) {
+       
+        number =  (req.body.type == 1) ? number[0].numberRegistered : number[0].numberAttendees; 
+        number = number + Number(req.body.count);
+        response = await event.updateEventStatics(number, req.body.id, req.body.type);
+        event.closeConectionBD();
+        res.json({
+            result: response
+        });
+    }   
+    
 });
 
 router.get('/getEventStatistics', async (req, res)=>{
@@ -77,4 +85,36 @@ router.get('/getEventStatistics', async (req, res)=>{
     res.json({result: data_statistics});
 });
 
+router.post('/uploadFile', fileServer.middleware().single('eventFile'), (req, res)=>{
+    console.log("uploadFile", req.file.filename);
+    res.json({
+        image:  req.file.path
+    })
+});
+
+router.get('/getRegisteredByEvent', async (req, res)=>{ 
+    const event = new EventModel();
+    const events = await event.getAllEvents();
+    let data = [];
+    let labels = [];
+    for(let i=0; i < events.length; i++){
+        labels.push(events[i].eventName);
+        const statistics = await event.getEventStatistcsById(events[i].idEvents);
+        console.info("ID: ", events[i].idEvents, "numbers: ", statistics);
+        data.push(
+            statistics[0].numberRegistered
+        );
+    }
+
+    const response = {
+        labels: labels,
+        data: data
+    };
+
+    res.json({
+        result: response
+    })
+    
+    console.log(response);
+});
 module.exports = router;

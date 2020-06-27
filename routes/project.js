@@ -7,7 +7,7 @@ const t_project='project', t_activity="activity";
 
 router.get('/getEntrepreneurs', async (req, res) =>{
     let Entre = new ProjectModel();
-     response = await Entre.getAllEntre();
+    const response = await Entre.getAllEntre();
      res.json({result: response});
      //console.log("aaaaa", response);
      
@@ -93,7 +93,7 @@ router.post('/editProject', async (req, res)=>{
     console.log("request",req.body);
     
     let project = new ProjectModel(req.body,t_project);
-    response = await project.editProject(req.body.id);
+    const response = await project.editProject(req.body.id);
     res.json({result: response});
 });
 
@@ -133,11 +133,21 @@ router.get('/getActivityByProjectAndPhase', async (req, res )=>{
 });
 
 router.post('/createActivity', async (req, res)=>{
+    console.log("ACTIVITY_  ", req.body);
     const project = new ProjectModel(req.body, t_activity);
     const response = await project.createActivityByProject();
     res.json({result: response});
 });
 
+router.get('/getAmountActivities', async (req, res)=>{
+    const project = new ProjectModel();
+    const phase = req.query.phase;
+    console.log(phase);
+    const response = await project.getActivitiesByPhase(phase);
+    console.log(response);
+    res.json({result: response.length});
+
+}); 
 
 
 module.exports =  router;
