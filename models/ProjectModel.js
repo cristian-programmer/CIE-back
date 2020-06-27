@@ -9,7 +9,7 @@ class ProjectModel {
 
         this.database = new Database();
         this.database.getConection();
-        console.log("dataaaaaa",   data, " ", type);
+        //console.log("dataaaaaa",   data, " ", type);
         if(data != undefined) {
             if(type == 'project') {
                 
@@ -35,7 +35,14 @@ class ProjectModel {
         return await this.database.queryCommand(`SELECT * FROM mydb.projects`)   
     }
 
-    async getPorjectsByCurrentAvisor(name){
+
+    async getListProject(){
+        console.log("ooooo", this.currentAdvisor);
+        
+        return await this.database.queryCommand(`SELECT * FROM mydb.projects where currentAdvisor= "${this.currentAdvisor}"`);
+    }
+  
+     async getPorjectsByCurrentAvisor(name){
         return await this.database.queryCommand(`SELECT * FROM mydb.projects WHERE 
             currentAdvisor="${name}"`);
     }

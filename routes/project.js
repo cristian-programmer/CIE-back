@@ -9,9 +9,11 @@ router.get('/getEntrepreneurs', async (req, res) =>{
     let Entre = new ProjectModel();
      response = await Entre.getAllEntre();
      res.json({result: response});
-     console.log("aaaaa", response);
+     //console.log("aaaaa", response);
      
  });
+
+
 
 router.get('/getProjects', async (req, res) =>{
    const project = new ProjectModel();
