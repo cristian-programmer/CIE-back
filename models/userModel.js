@@ -21,7 +21,7 @@ class UserModel{
 
     assignRole(relationship){
         return ( relationship == 'graduate' || 
-        relationship == 'entrepreneur' || relationship == 'other') ?
+        relationship == 'student' || relationship == 'other') ?
          'entrepreneur' : 'role-pending';
     }
 
@@ -48,6 +48,25 @@ class UserModel{
         const result = await this.database.queryCommand(`UPDATE mydb.Users SET role="${data.role}"
          WHERE idUsers="${data.id}"`);
         return result['changedRows'] == 1 ? 'edited' :  'not-edited';
+    }
+
+
+    async updateProfileImage(data){
+        const result = await this.database.queryCommand(`UPDATE mydb.Users SET image='${data.path}'
+        WHERE idUsers="${data.id}"`);
+        return result['changedRows'] == 1 ? 'edited' : 'not-edited';
+    }
+
+    async getUserById(id){
+        return await this.database.queryCommand(`SELECT name, email, username, role,
+         relationshipUniversity, phone, mobile, image FROM mydb.Users WHERE idUsers=${id}`);
+    }
+
+    async editUser(data){
+        const result = await this.database.queryCommand(`UPDATE mydb.Users SET name="${data.name}", 
+        email="${data.email}", username="${data.username}", phone="${data.phone}", mobile="${data.mobile}" 
+        WHERE idUsers=${data.id}`);
+        return result['changedRows'] == 1 ? 'edited': 'not-edited';
     }
 
 }

@@ -3,6 +3,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var dotenv = require('dotenv');
+require('pretty-console-colors');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -11,9 +12,21 @@ var serviceRouter = require('./routes/service');
 var tracingRouter = require('./routes/tracing');
 var projectRouter = require('./routes/project');
 var ConfigRouter = require('./routes/config');
+var StructureDB = require('./infrastructure/structureDB').StructureDB;
+var SocketServer = require('./infrastructure/SocketServer').SocketServer;
+
+console.info('Init Server PORT ', process.env.PORT);
+
+const structureDB =  new StructureDB();
+const sockServer = new SocketServer();
+sockServer.socketServerOn();
+
+structureDB.createAll();
 
 var app = express();
 dotenv.config();
+
+   
 
 function cors(req, res, next){
     res.header('Access-Control-Allow-Origin', '*');

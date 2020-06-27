@@ -1,3 +1,5 @@
+const { response } = require('express');
+
 const Database = require('../infrastructure/ManagerConnection').Connection;
 //const S3 = require('../infrastructure/ManagerS3File').ManagerS3File;
 
@@ -29,14 +31,20 @@ class ProjectModel {
         }
     }
 
-    async getAllEntre(){
-        return await this.database.queryCommand(`SELECT * FROM mydb.users WHERE role="entrepreneur"`);
+    async getAllProjects(){
+        return await this.database.queryCommand(`SELECT * FROM mydb.projects`)   
     }
+
 
     async getListProject(){
         console.log("ooooo", this.currentAdvisor);
         
         return await this.database.queryCommand(`SELECT * FROM mydb.projects where currentAdvisor= "${this.currentAdvisor}"`);
+    }
+  
+     async getPorjectsByCurrentAvisor(name){
+        return await this.database.queryCommand(`SELECT * FROM mydb.projects WHERE 
+            currentAdvisor="${name}"`);
     }
 
     async create(){
@@ -92,6 +100,10 @@ class ProjectModel {
 
     createResource(){
 
+    }
+
+    async getAllParticipants(){
+        return await this.database.queryCommand(`SELECT entrepreneurs, currentAdvisor, projectName FROM mydb.projects`)
     }
 
 }

@@ -25,4 +25,26 @@ router.post('/updateAttendance', async (req, res)=>{
     res.json({result: response});
 });
 
+router.post('/updateAttended', async (req, res) =>{
+    let attendance = new TracingModel();
+    response = await attendance.updateAttended(req.body.id, req.body.attended);
+    res.json({
+        result: response
+    })
+});
+
+router.get('/getLastActivitySystem', async (req, res)=>{
+    let tracing = new TracingModel();
+    response = await tracing.getLastActivitySystem(req.query.idUser);
+    res.json({result: response});
+});
+
+router.post('/createLastActivitySystem', async (req, res)=>{
+  
+    let tracing = new TracingModel();
+    response =  await tracing.createLastActivitySystem(req.body);
+    console.log(response);
+    res.json({result:response});
+});
+
 module.exports = router;
