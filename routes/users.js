@@ -11,21 +11,8 @@ const jwt = new JsonWebToken();
 const multer = require('multer');
 const manager = new managerFilesServer();
 
-manager.saveProfileUser();
+manager.saveFileInPathPublic();
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    console.log("file, " + file);
-    cb(null, './../CIE-front/public')
-  },filename: (req, file, cb) => {
-    cb(null, file.originalname);
-  }
-
-});
-
-const upload = multer({
-  storage: storage
-});
 
 let idProfile = 0;
 
@@ -169,7 +156,6 @@ router.post('/editUser', async (req, res) => {
   } catch (error) {
     console.error(error);
   }
-  
 });
 
 module.exports = router;
