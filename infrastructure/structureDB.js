@@ -94,7 +94,7 @@ class StructureDB {
              idComments INT NULL,
              state VARCHAR(50) NOT NULL,
              resources VARCHAR(100) NULL,
-             executionWeek INT NOT NULL,
+             executionWeek VARCHAR(50) NOT NULL,
              phase VARCHAR(100) NOT NULL,
              idProject INT NOT NULL,
             PRIMARY KEY (idActivities))`).then(res =>{ console.info('create table activities')})
@@ -191,6 +191,25 @@ class StructureDB {
 
     }
 
+    createTableActivityStatistics(){
+        this.database.queryCommand(`CREATE TABLE IF NOT EXISTS mydb.ActivityStatistics (
+            idActivityStatistics INT NOT NULL AUTO_INCREMENT,
+            phase VARCHAR(50) NOT NULL,
+            amountActivity INT NULL,
+            amountComments INT NULL,
+            PRIMARY KEY (idActivityStatistics))`).then(res =>{ console.info('create table activityStatistics')})
+            .catch(error =>{console.error(error)});
+    }
+
+    createTableComments(){
+        this.database.queryCommand(`CREATE TABLE IF NOT EXISTS mydb.Comments (
+            idComments INT NOT NULL AUTO_INCREMENT,
+            idUsers VARCHAR(45) NULL,
+            commentary VARCHAR(45) NULL,
+            PRIMARY KEY (idComments))`).then(res =>{ console.info('create table Comments')})
+            .catch(error =>{console.error(error)});;
+    }
+
     insertModules(){
         this.database.queryCommand(`INSERT INTO mydb.SystemModules (nameModule, role, route, active)
         values ('Inicio', 'assistant', '/admin',  1),
@@ -202,7 +221,7 @@ class StructureDB {
          ('Calendario', 'entrepreneur', '/admin/calendar',  1),
          ('Calendario', 'adviser', '/admin/calendar',  1),
          ('Gestion de Proyectos', 'entrepreneur', '/admin/management',  1),
-         ('Configuracion', 'admin', '/admin/config',  1),
+         ('Configuracion', 'administrator', '/admin/config',  1),
          ('Config de Proyectos', 'adviser', '/admin/proyect',  1),
          ('Trazabilidad de eventos', 'assistant', '/admin/eventTraceability',  1),
          ('Asistencia', 'assistant', '/admin/assistance',  1)
@@ -247,6 +266,9 @@ class StructureDB {
         this.createTableEventStatistics();
         this.createTableMeeting();
         this.createTableGuests();
+        this.createTableActivityStatistics();
+        this.createTableComments();
+        
     }
     
 }

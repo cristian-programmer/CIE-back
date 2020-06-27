@@ -6,7 +6,7 @@ class ManagerFileServer{
         this.storage = null;
     }
 
-    saveProfileUser(){
+    saveFileInPathPublic(){
        this.storage = multer.diskStorage({
             destination: (req, file, cb) =>{
                 console.log("file: ", file);
