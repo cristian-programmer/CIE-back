@@ -7,7 +7,7 @@ class ProjectModel {
 
         this.database = new Database();
         this.database.getConection();
-        console.log("dataaaaaa",   data, " ", type);
+        //console.log("dataaaaaa",   data, " ", type);
         if(data != undefined) {
             if(type == 'project') {
                 
@@ -34,7 +34,9 @@ class ProjectModel {
     }
 
     async getListProject(){
-        return await this.database.queryCommand('SELECT * FROM mydb.projects');
+        console.log("ooooo", this.currentAdvisor);
+        
+        return await this.database.queryCommand(`SELECT * FROM mydb.projects where currentAdvisor= "${this.currentAdvisor}"`);
     }
 
     async create(){

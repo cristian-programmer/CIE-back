@@ -8,21 +8,21 @@ router.get('/getEntrepreneurs', async (req, res) =>{
     let Entre = new ProjectModel();
      response = await Entre.getAllEntre();
      res.json({result: response});
-     console.log("aaaaa", response);
+     //console.log("aaaaa", response);
      
  });
 
-router.get('/getProjects', async (req, res) =>{
-   let project = new ProjectModel();
-    response = await project.getListProject();
+router.post('/getProjects', async (req, res) =>{
+   let project = new ProjectModel(req.body, t_project);
+    response = await project.getListProject(req.query.nameAsesor);
     res.json({result: response});
-    console.log("iiiiiii", response);
+    console.log("bbbbbbbbbbbbb", req.body);
+    //console.log("iiiiiii", response);
     
 });
 
 router.post('/createProject', async (req, res) =>{
-    console.log("asesor", req.body.nameAsesor);
-    
+    //console.log("asesor", req.body.nameAsesor);
     let project = new ProjectModel(req.body, t_project);
     response = await project.create();
     res.json({result: response});
@@ -31,7 +31,7 @@ router.post('/createProject', async (req, res) =>{
 
 router.get('/getProject', async (req, res)=>{
     let project = new ProjectModel();
-    console.log(req.query.id);
+    //console.log(req.query.id);
     response = await project.getProjectById(req.query.id);
     res.json({result: response});
 });
