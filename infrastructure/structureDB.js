@@ -206,6 +206,7 @@ class StructureDB {
             idComments INT NOT NULL AUTO_INCREMENT,
             idUsers VARCHAR(45) NULL,
             commentary VARCHAR(45) NULL,
+            idActivity INT NOT NULL,
             PRIMARY KEY (idComments))`).then(res =>{ console.info('create table Comments')})
             .catch(error =>{console.error(error)});;
     }

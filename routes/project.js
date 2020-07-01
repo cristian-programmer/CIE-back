@@ -2,6 +2,7 @@ let app = require('express');
 const { response } = require('express');
 let router = app.Router();
 const ProjectModel = require('./../models/ProjectModel').ProjectModel;
+const UserModel = require('./../models/userModel').UserModel; 
 
 const t_project='project', t_activity="activity";
 
@@ -13,6 +14,12 @@ router.get('/getEntrepreneurs', async (req, res) =>{
      
  });
 
+ router.post('/getProjects2', async (req, res) =>{
+    let project = new ProjectModel(req.body, t_project);
+    const response = await project.getListProject(req.query.nameAsesor);
+     res.json({result: response});
+     
+ });
 
 
 router.get('/getProjects', async (req, res) =>{
@@ -120,6 +127,7 @@ router.get('/getActivityByProjectAndPhase', async (req, res )=>{
     
             
             activities.push({
+                id: response[i].idActivities,
                 nameActivity: response[i].nameActivity,
                 state: response[i].state,
                 phase: response[i].phase,
@@ -147,7 +155,35 @@ router.get('/getAmountActivities', async (req, res)=>{
     console.log(response);
     res.json({result: response.length});
 
-}); 
+});
 
+router.post('/comment/add', async (req, res)=>{
+    const project = new ProjectModel();
+    console.log("commentary ", req.body);
+    project.createCommentary(req.body);
+});
+
+
+router.get('/getComments', async (req, res) => {
+    const project = new ProjectModel();
+    const user = new UserModel();
+    console.log("idActivity: " , req.query.idActivity);
+    const response = await project.getCommentsByIdActivity(req.query.idActivity);
+    const comments = [];
+    for(let i=0; i< response.length; i++){
+        let userFound = await user.getUserById(Number(response[i].idUsers));
+        comments.push({
+            author: userFound[0].name,
+            avatar : userFound[0].image,
+            content: response[i].commentary,
+            datetime: new Date()
+
+        });
+    }
+    console.log(comments);
+    res.json({
+        result: comments
+    });
+});
 
 module.exports =  router;

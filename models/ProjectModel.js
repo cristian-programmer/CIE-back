@@ -113,11 +113,17 @@ class ProjectModel {
        return await this.database.queryCommand(`SELECT * from mydb.activities WHERE phase="${phase}"`);
     }
 
-    async updateIdComments(data){
-        const result = this.database.queryCommand(`UPDATE mydb.projects SET idComments=${data.idComment}
-         WHERE idActivities=${data.idActivity}`);
-         return result['changedRows'] == 1 ? 'edited' :  'not-edited';
+    async createCommentary(data) {
+        const result = await this.database.queryCommand(`INSERT INTO mydb.comments (idUsers, commentary, idActivity) 
+        values ("${data.idUsers}", "${data.commentary}", ${data.idActivity})`);
+        return result['changedRows'] == 1 ?  'edited' : 'not-edited'; 
     }
+
+    async getCommentsByIdActivity(id) {
+        return await this.database.queryCommand(`SELECT * FROM mydb.comments WHERE idActivity=${id}`);
+    }
+
+
 
 }
 
