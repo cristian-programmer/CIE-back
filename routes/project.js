@@ -83,8 +83,9 @@ async function findMethodology(data, phases, user, project, id) {
     let content = [];
     let userFound;
     for(let i=0; i < phases.length; i++){
-        const amountActivities = await project.getActivitiesByIdProject(phases[i], id)[0];
-        console.log("amountActivities > ", amountActivities);
+        const result = await project.getActivitiesByIdProject(phases[i], id);
+        const amountComments = await getCountComments(phases[i], id, project);
+        console.log("amountActivities > ", result[0].amount , " idProject > ", id, " phase > ", phases[i]);
         for(let j=0; j < data.length; j++) {
             if(phases[i].includes(data[j].phaseName)){
                 userFound =  await 
@@ -92,24 +93,45 @@ async function findMethodology(data, phases, user, project, id) {
                 content.push({
                    nameAssigned : userFound[0].name,
                    image: userFound[0].image,
-                   phase: phases[i]});
+                   phase: phases[i],
+                   amountActivities: result[0].amount,
+                   amountComments: amountComments
+                });
                    break;
            }else {
                content.push({
                    nameAssigned : "",
                    image: "",
-                   phase: phases[i]});
+                   phase: phases[i],
+                   amountActivities: result[0].amount,
+                   amountComments:amountComments});
                    break;
            }
         } 
         content.push({
             nameAssigned : "",
             image: "",
-            phase: phases[i]});
+            phase: phases[i],
+            amountActivities: result[0].amount,
+            amountComments:amountComments});
         
     }
 
     return content;
+}
+
+async function getCountComments(phase, id, project) {
+    const ids = await project.getIdActivities(phase, id);
+    console.log("ids >", ids);
+    let amount = 0;
+    for(let i=0; i < ids.length; i ++) {
+        temp = await project.getCommentsByIdActivity(ids[i].idActivities);
+        amount =+ temp[0].amount;
+
+    }
+
+    console.log("amount comments > ", amount);
+    return amount;
 }
 
 router.get('/getParticipans', async (req, res)=>{
@@ -217,10 +239,11 @@ router.get('/getComments', async (req, res) => {
     const project = new ProjectModel();
     const user = new UserModel();
     console.log("idActivity: " , req.query.idActivity);
-    const response = await project.getCommentsByIdActivity(req.query.idActivity);
+    const response = await project.getCommentsIdUsers(req.query.idActivity);
+    console.log("response > ", response);
     const comments = [];
     for(let i=0; i< response.length; i++){
-        let userFound = await user.getUserById(Number(response[i].idUsers));
+        let userFound = await user.getUserById(response[i].idUsers);
         comments.push({
             author: userFound[0].name,
             avatar : userFound[0].image,
