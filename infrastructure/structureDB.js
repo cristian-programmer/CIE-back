@@ -235,7 +235,8 @@ class StructureDB {
          ('Configuracion', 'administrator', '/admin/config',  1),
          ('Config de Proyectos', 'adviser', '/admin/proyect',  1),
          ('Trazabilidad de eventos', 'assistant', '/admin/eventTraceability',  1),
-         ('Asistencia', 'assistant', '/admin/assistance',  1)
+         ('Asistencia', 'assistant', '/admin/assistance',  1),
+         ('Traz. de proyectos', 'adviser', '/admin/trazproject/', 1 )
        `).then(res =>{
            console.info('create routers of the modules');
        }).catch(error=>{
