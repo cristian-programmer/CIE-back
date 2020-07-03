@@ -69,6 +69,12 @@ class UserModel{
         return result['changedRows'] == 1 ? 'edited': 'not-edited';
     }
 
+    
+    async getAllUsersByRole () {
+        return await this.database.queryCommand(`SELECT * FROM mydb.Users WHERE role="adviser"`);
+    }
+
+
 }
 
 module.exports = {

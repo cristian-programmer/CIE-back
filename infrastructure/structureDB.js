@@ -206,8 +206,19 @@ class StructureDB {
             idComments INT NOT NULL AUTO_INCREMENT,
             idUsers VARCHAR(45) NULL,
             commentary VARCHAR(45) NULL,
+            idActivity INT NOT NULL,
             PRIMARY KEY (idComments))`).then(res =>{ console.info('create table Comments')})
             .catch(error =>{console.error(error)});;
+    }
+
+    createTableMethodology() {
+        this.database.queryCommand(`CREATE TABLE IF NOT EXISTS mydb.Methodology (
+            idMethodology INT NOT NULL AUTO_INCREMENT,
+            idProject INT NOT NULL,
+            phaseName VARCHAR(45) NOT NULL,
+            idAdviser INT NULL,
+            PRIMARY KEY (idMethodology))`).then(res=>{console.info('create table methodology')})
+        .catch(error => {console.error(error)});
     }
 
     insertModules(){
@@ -268,6 +279,7 @@ class StructureDB {
         this.createTableGuests();
         this.createTableActivityStatistics();
         this.createTableComments();
+        this.createTableMethodology();
         
     }
     

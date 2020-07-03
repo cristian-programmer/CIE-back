@@ -2,17 +2,24 @@ let app = require('express');
 const { response } = require('express');
 let router = app.Router();
 const ProjectModel = require('./../models/ProjectModel').ProjectModel;
+const UserModel = require('./../models/userModel').UserModel; 
 
 const t_project='project', t_activity="activity";
 
 router.get('/getEntrepreneurs', async (req, res) =>{
     let Entre = new ProjectModel();
-     response = await Entre.getAllEntre();
+    const response = await Entre.getAllEntre();
      res.json({result: response});
      //console.log("aaaaa", response);
      
  });
 
+ router.post('/getProjects2', async (req, res) =>{
+    let project = new ProjectModel(req.body, t_project);
+    const response = await project.getListProject(req.query.nameAsesor);
+     res.json({result: response});
+     
+ });
 
 
 router.get('/getProjects', async (req, res) =>{
@@ -52,10 +59,58 @@ router.post('/createProject', async (req, res) =>{
 
 router.get('/getProject', async (req, res)=>{
     let project = new ProjectModel();
+    let user = new UserModel();
+
     console.log(req.query.id);
     const response = await project.getProjectById(req.query.id);
-    res.json({result: response});
+    const response2 =  await project.getAssignment(req.query.id);
+    const phases = (response[0].methodologicalPhases).split(',');
+
+    const methodology = await findMethodology(response2, phases, user, project, req.query.id);
+
+    delete response[0]['methodologicalPhases'];
+
+    console.log("response: ",response);
+    console.log("r_phases: ", methodology);
+
+    res.json({
+        result: response, 
+        phases: methodology
+    });
 });
+
+async function findMethodology(data, phases, user, project, id) {
+    let content = [];
+    let userFound;
+    for(let i=0; i < phases.length; i++){
+        const amountActivities = await project.getActivitiesByIdProject(phases[i], id)[0];
+        console.log("amountActivities > ", amountActivities);
+        for(let j=0; j < data.length; j++) {
+            if(phases[i].includes(data[j].phaseName)){
+                userFound =  await 
+                user.getUserById(data[i].idAdviser);
+                content.push({
+                   nameAssigned : userFound[0].name,
+                   image: userFound[0].image,
+                   phase: phases[i]});
+                   break;
+           }else {
+               content.push({
+                   nameAssigned : "",
+                   image: "",
+                   phase: phases[i]});
+                   break;
+           }
+        } 
+        content.push({
+            nameAssigned : "",
+            image: "",
+            phase: phases[i]});
+        
+    }
+
+    return content;
+}
 
 router.get('/getParticipans', async (req, res)=>{
     console.log("participans ", req.query.id);
@@ -93,11 +148,12 @@ router.post('/editProject', async (req, res)=>{
     console.log("request",req.body);
     
     let project = new ProjectModel(req.body,t_project);
-    response = await project.editProject(req.body.id);
+    const response = await project.editProject(req.body.id);
     res.json({result: response});
 });
 
-router.get('/getActivityByProjectAndPhase', async (req, res )=>{
+
+router.get('/getActivityByProjectAndPhase', async (req, res )=> {
     let project = new ProjectModel();
     let activities = [];
     let names = [];
@@ -105,7 +161,7 @@ router.get('/getActivityByProjectAndPhase', async (req, res )=>{
     console.log(response);
     if(response.length > 0){
         let nameshort='';  
-        for(let i=0; i < response.length; i++){ // 2
+        for(let i=0; i < response.length; i++) { // 2
           
             console.log(response[i].responsables);
             const responsables = response[i].responsables.split(',')
@@ -120,6 +176,7 @@ router.get('/getActivityByProjectAndPhase', async (req, res )=>{
     
             
             activities.push({
+                id: response[i].idActivities,
                 nameActivity: response[i].nameActivity,
                 state: response[i].state,
                 phase: response[i].phase,
@@ -133,11 +190,67 @@ router.get('/getActivityByProjectAndPhase', async (req, res )=>{
 });
 
 router.post('/createActivity', async (req, res)=>{
+    console.log("ACTIVITY_  ", req.body);
     const project = new ProjectModel(req.body, t_activity);
     const response = await project.createActivityByProject();
     res.json({result: response});
 });
 
+router.get('/getAmountActivities', async (req, res)=>{
+    const project = new ProjectModel();
+    const phase = req.query.phase;
+    console.log(phase);
+    const response = await project.getActivitiesByPhase(phase);
+    console.log(response);
+    res.json({result: response.length});
 
+});
+
+router.post('/comment/add', async (req, res)=>{
+    const project = new ProjectModel();
+    console.log("commentary ", req.body);
+    project.createCommentary(req.body);
+});
+
+
+router.get('/getComments', async (req, res) => {
+    const project = new ProjectModel();
+    const user = new UserModel();
+    console.log("idActivity: " , req.query.idActivity);
+    const response = await project.getCommentsByIdActivity(req.query.idActivity);
+    const comments = [];
+    for(let i=0; i< response.length; i++){
+        let userFound = await user.getUserById(Number(response[i].idUsers));
+        comments.push({
+            author: userFound[0].name,
+            avatar : userFound[0].image,
+            content: response[i].commentary,
+            datetime: new Date()
+
+        });
+    }
+    console.log(comments);
+    res.json({
+        result: comments
+    });
+});
+
+router.post('/createAssignment', async (req, res) =>{
+    console.log(req.body);
+    const project = new ProjectModel();
+    const exists =  await project.getAssignmentByAll(req.body);
+    console.log("exists: ", exists);
+    let response;
+    if(exists.length > 0 ){
+        response = await project.updateAssignment(req.body);
+        res.json({result : response})
+    }else {
+        
+        response = await project.createAssignment(req.body);
+        res.json({result : response})
+    }
+   
+
+});
 
 module.exports =  router;

@@ -24,12 +24,16 @@ class ProjectModel {
                 this.nameActivity = data.nameActivity;
                 this.responsables = data.responsables;
                 this.state = data.state;
-                this.executionWeek = 1;
+                this.executionWeek = data.week;
                 this.phase = data.phase;
                 this.id = data.id;
             }
         }
     }
+    async getAllEntre(){         
+        return await this.database.queryCommand(`SELECT * FROM mydb.users 
+        WHERE role="entrepreneur"`);    
+     }
 
     async getAllProjects(){
         return await this.database.queryCommand(`SELECT * FROM mydb.projects`)   
@@ -91,12 +95,11 @@ class ProjectModel {
     async createActivityByProject(){
         const result =  await this.database.queryCommand(`INSERT INTO mydb.activities 
         (nameActivity, responsables, state, executionWeek, phase, idProject) values ("${this.nameActivity}",
-       "${this.responsables}", "${this.state}", ${this.executionWeek}, "${this.phase}", ${this.id})`);
+       "${this.responsables}", "${this.state}", "${this.executionWeek}", "${this.phase}", ${this.id})`);
 
         return result['affectedRows'] == 1 ? 'created' :  'not-created';
     }
 
-    
 
     createResource(){
 
@@ -105,6 +108,50 @@ class ProjectModel {
     async getAllParticipants(){
         return await this.database.queryCommand(`SELECT entrepreneurs, currentAdvisor, projectName FROM mydb.projects`)
     }
+
+    async getActivitiesByPhase(phase){
+       return await this.database.queryCommand(`SELECT * from mydb.activities WHERE phase="${phase}"`);
+    }
+
+    async createCommentary(data) {
+        const result = await this.database.queryCommand(`INSERT INTO mydb.comments (idUsers, commentary, idActivity) 
+        values ("${data.idUsers}", "${data.commentary}", ${data.idActivity})`);
+        return result['changedRows'] == 1 ?  'edited' : 'not-edited'; 
+    }
+
+    async getCommentsByIdActivity(id) {
+        return await this.database.queryCommand(`SELECT * FROM mydb.comments WHERE idActivity=${id}`);
+    }
+
+    async createAssignment(data){
+        const result = await this.database.queryCommand(`INSERT INTO mydb.Methodology (idProject, phaseName, idAdviser)
+        values (${data.idProject}, "${data.phase}", ${data.idAssigned})`);
+
+        return result['affectedRows'] == 1 ? 'created' : 'not-created';
+    }
+
+    async getAssignment(id){
+        return await this.database.queryCommand(`SELECT * FROM mydb.Methodology WHERE idProject=${id}`);
+    }
+
+    async updateAssignment(data) {
+        const result = await this.database.queryCommand(`UPDATE mydb.Methodology 
+        SET idProject=${data.idProject}, phaseName="${data.phase}", idAdviser=${data.idAssigned} WHERE idProject=${data.idProject}`);
+        return result['changedRows'] == 1 ? 'edited' : 'not-edited';
+    }
+
+    async getAssignmentByAll(data) {
+        return await this.database.queryCommand(`SELECT * FROM mydb.Methodology WHERE idProject=${data.idProject} 
+        AND phaseName="${data.phase}" AND idAdviser=${data.idAssigned}`);
+    }
+
+    async getActivitiesByIdProject(phase, id){
+        return await this.database.queryCommand(`SELECT COUNT(*) FROM mydb.activities 
+        WHERE idProject=${id} AND phase="${phase}"`);
+    }
+    
+
+
 
 }
 

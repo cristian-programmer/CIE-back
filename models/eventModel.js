@@ -1,5 +1,5 @@
 const Database = require('../infrastructure/ManagerConnection').Connection;
-
+const PATH_CLIENT = 'http://localhost:3000/';
 class EvenModel {
     constructor(data, type){
         this.database = new Database();
@@ -10,7 +10,7 @@ class EvenModel {
                 this.eventName =  data.nameEvent;
                 this.eventDescription = data.description;
                 this.eventDate =  data.date;
-                this.eventImage = "path/falsy";
+                this.eventImage = data.eventImage;
         }
     }
 
@@ -18,7 +18,7 @@ class EvenModel {
         console.log(this.eventName);
         const result = await this.database.queryCommand(`INSERT INTO mydb.events 
         (eventName, eventDescription, eventDate, eventImage) values ("${this.eventName}", "${this.eventDescription}",
-         "${this.eventDate}" , "${this.eventImage}")`);
+         "${this.eventDate}" , '${PATH_CLIENT}${this.eventImage}')`);
         return result['affectedRows'] == 1 ? 'created' :  'not-created';
     }
 
@@ -80,6 +80,18 @@ class EvenModel {
 
     async getEventStatistcs(){
         return await this.database.queryCommand(`SELECT * FROM mydb.eventStatistics ORDER BY idEventStatistics DESC LIMIT 3`);
+    }
+
+    async updateEventImage(data) {
+        const result = await this.database.queryCommand(`UPDATE mydb.events 
+        SET eventImage="${path.path}" WHERE idEvent=${data.id}`);
+
+        return result['changedRows'] == 1 ? 'edited': 'not-edited';
+    }
+
+    async getEventStatistcsById(id){
+        return await this.database.queryCommand(`SELECT * FROM mydb.eventStatistics
+         WHERE idEvent=${id}`);
     }
 
     closeConectionBD(){
