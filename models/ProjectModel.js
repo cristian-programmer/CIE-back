@@ -120,7 +120,8 @@ class ProjectModel {
     }
 
     async getCommentsByIdActivity(id) {
-        return await this.database.queryCommand(`SELECT * FROM mydb.comments WHERE idActivity=${id}`);
+        return await this.database.queryCommand(`SELECT COUNT(*) AS amount FROM mydb.comments
+         WHERE idActivity=${id}`);
     }
 
     async createAssignment(data){
@@ -146,11 +147,19 @@ class ProjectModel {
     }
 
     async getActivitiesByIdProject(phase, id){
-        return await this.database.queryCommand(`SELECT COUNT(*) FROM mydb.activities 
+        return await this.database.queryCommand(`SELECT COUNT(*) AS amount FROM mydb.activities 
         WHERE idProject=${id} AND phase="${phase}"`);
     }
-    
 
+    async getIdActivities(phase, id){
+        return await this.database.queryCommand(`SELECT idActivities FROM mydb.activities 
+        WHERE idProject=${id} AND phase="${phase}"`);
+    }
+
+    async getCommentsIdUsers(id) {
+        return await this.database.queryCommand(`SELECT * FROM mydb.comments
+         WHERE idActivity=${id}`);
+    }
 
 
 }
