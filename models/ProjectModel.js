@@ -123,6 +123,34 @@ class ProjectModel {
         return await this.database.queryCommand(`SELECT * FROM mydb.comments WHERE idActivity=${id}`);
     }
 
+    async createAssignment(data){
+        const result = await this.database.queryCommand(`INSERT INTO mydb.Methodology (idProject, phaseName, idAdviser)
+        values (${data.idProject}, "${data.phase}", ${data.idAssigned})`);
+
+        return result['affectedRows'] == 1 ? 'created' : 'not-created';
+    }
+
+    async getAssignment(id){
+        return await this.database.queryCommand(`SELECT * FROM mydb.Methodology WHERE idProject=${id}`);
+    }
+
+    async updateAssignment(data) {
+        const result = await this.database.queryCommand(`UPDATE mydb.Methodology 
+        SET idProject=${data.idProject}, phaseName="${data.phase}", idAdviser=${data.idAssigned} WHERE idProject=${data.idProject}`);
+        return result['changedRows'] == 1 ? 'edited' : 'not-edited';
+    }
+
+    async getAssignmentByAll(data) {
+        return await this.database.queryCommand(`SELECT * FROM mydb.Methodology WHERE idProject=${data.idProject} 
+        AND phaseName="${data.phase}" AND idAdviser=${data.idAssigned}`);
+    }
+
+    async getActivitiesByIdProject(phase, id){
+        return await this.database.queryCommand(`SELECT COUNT(*) FROM mydb.activities 
+        WHERE idProject=${id} AND phase="${phase}"`);
+    }
+    
+
 
 
 }

@@ -59,10 +59,58 @@ router.post('/createProject', async (req, res) =>{
 
 router.get('/getProject', async (req, res)=>{
     let project = new ProjectModel();
+    let user = new UserModel();
+
     console.log(req.query.id);
     const response = await project.getProjectById(req.query.id);
-    res.json({result: response});
+    const response2 =  await project.getAssignment(req.query.id);
+    const phases = (response[0].methodologicalPhases).split(',');
+
+    const methodology = await findMethodology(response2, phases, user, project, req.query.id);
+
+    delete response[0]['methodologicalPhases'];
+
+    console.log("response: ",response);
+    console.log("r_phases: ", methodology);
+
+    res.json({
+        result: response, 
+        phases: methodology
+    });
 });
+
+async function findMethodology(data, phases, user, project, id) {
+    let content = [];
+    let userFound;
+    for(let i=0; i < phases.length; i++){
+        const amountActivities = await project.getActivitiesByIdProject(phases[i], id)[0];
+        console.log("amountActivities > ", amountActivities);
+        for(let j=0; j < data.length; j++) {
+            if(phases[i].includes(data[j].phaseName)){
+                userFound =  await 
+                user.getUserById(data[i].idAdviser);
+                content.push({
+                   nameAssigned : userFound[0].name,
+                   image: userFound[0].image,
+                   phase: phases[i]});
+                   break;
+           }else {
+               content.push({
+                   nameAssigned : "",
+                   image: "",
+                   phase: phases[i]});
+                   break;
+           }
+        } 
+        content.push({
+            nameAssigned : "",
+            image: "",
+            phase: phases[i]});
+        
+    }
+
+    return content;
+}
 
 router.get('/getParticipans', async (req, res)=>{
     console.log("participans ", req.query.id);
@@ -104,7 +152,8 @@ router.post('/editProject', async (req, res)=>{
     res.json({result: response});
 });
 
-router.get('/getActivityByProjectAndPhase', async (req, res )=>{
+
+router.get('/getActivityByProjectAndPhase', async (req, res )=> {
     let project = new ProjectModel();
     let activities = [];
     let names = [];
@@ -112,7 +161,7 @@ router.get('/getActivityByProjectAndPhase', async (req, res )=>{
     console.log(response);
     if(response.length > 0){
         let nameshort='';  
-        for(let i=0; i < response.length; i++){ // 2
+        for(let i=0; i < response.length; i++) { // 2
           
             console.log(response[i].responsables);
             const responsables = response[i].responsables.split(',')
@@ -184,6 +233,24 @@ router.get('/getComments', async (req, res) => {
     res.json({
         result: comments
     });
+});
+
+router.post('/createAssignment', async (req, res) =>{
+    console.log(req.body);
+    const project = new ProjectModel();
+    const exists =  await project.getAssignmentByAll(req.body);
+    console.log("exists: ", exists);
+    let response;
+    if(exists.length > 0 ){
+        response = await project.updateAssignment(req.body);
+        res.json({result : response})
+    }else {
+        
+        response = await project.createAssignment(req.body);
+        res.json({result : response})
+    }
+   
+
 });
 
 module.exports =  router;
