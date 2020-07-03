@@ -158,5 +158,13 @@ router.post('/editUser', async (req, res) => {
   }
 });
 
+
+router.get('/getAllAdvisers', async (req, res) => {
+  const user = new userModel();
+  const response = await user.getAllUsersByRole();
+  res.json({
+    result: response
+  })
+});
 module.exports = router;
  
