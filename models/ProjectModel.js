@@ -2,6 +2,7 @@ const { response } = require('express');
 
 const Database = require('../infrastructure/ManagerConnection').Connection;
 //const S3 = require('../infrastructure/ManagerS3File').ManagerS3File;
+const PATH_CLIENT = 'http://localhost:3000/';
 
 class ProjectModel {
 
@@ -27,6 +28,8 @@ class ProjectModel {
                 this.executionWeek = data.week;
                 this.phase = data.phase;
                 this.id = data.id;
+                this.description = data.description;
+                this.resources = data.resources;
             }
         }
     }
@@ -94,8 +97,8 @@ class ProjectModel {
 
     async createActivityByProject(){
         const result =  await this.database.queryCommand(`INSERT INTO mydb.activities 
-        (nameActivity, responsables, state, executionWeek, phase, idProject) values ("${this.nameActivity}",
-       "${this.responsables}", "${this.state}", "${this.executionWeek}", "${this.phase}", ${this.id})`);
+        (nameActivity, responsables, state, executionWeek, phase, idProject, description, resources) values ("${this.nameActivity}",
+       "${this.responsables}", "${this.state}", "${this.executionWeek}", "${this.phase}", ${this.id}, "${this.description}", "${PATH_CLIENT}${this.resources}")`);
 
         return result['affectedRows'] == 1 ? 'created' :  'not-created';
     }
@@ -131,8 +134,8 @@ class ProjectModel {
         return result['affectedRows'] == 1 ? 'created' : 'not-created';
     }
 
-    async getAssignment(id){
-        return await this.database.queryCommand(`SELECT * FROM mydb.Methodology WHERE idProject=${id}`);
+    async getAssignment(id, phase){
+        return await this.database.queryCommand(`SELECT * FROM mydb.Methodology WHERE idProject=${id} AND phaseName="${phase}"`);
     }
 
     async updateAssignment(data) {
@@ -143,7 +146,7 @@ class ProjectModel {
 
     async getAssignmentByAll(data) {
         return await this.database.queryCommand(`SELECT * FROM mydb.Methodology WHERE idProject=${data.idProject} 
-        AND phaseName="${data.phase}" AND idAdviser=${data.idAssigned}`);
+        AND phaseName="${data.phase}"`);
     }
 
     async getActivitiesByIdProject(phase, id){
@@ -159,6 +162,10 @@ class ProjectModel {
     async getCommentsIdUsers(id) {
         return await this.database.queryCommand(`SELECT * FROM mydb.comments
          WHERE idActivity=${id}`);
+    }
+
+    async getActivityById(id) {
+        return await this.database.queryCommand(`SELECT * FROM mydb.activities WHERE idActivities=${id}`);
     }
 
 

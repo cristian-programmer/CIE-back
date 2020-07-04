@@ -1,16 +1,17 @@
 let app = require('express');
-const { response } = require('express');
 let router = app.Router();
 const ProjectModel = require('./../models/ProjectModel').ProjectModel;
 const UserModel = require('./../models/userModel').UserModel; 
+const ManagerFile = require('./../infrastructure/ManagerFilesServer').ManagerFileServer;
 
+const fileServer = new ManagerFile();
+fileServer.saveFileInPathPublic();
 const t_project='project', t_activity="activity";
 
 router.get('/getEntrepreneurs', async (req, res) =>{
     let Entre = new ProjectModel();
     const response = await Entre.getAllEntre();
      res.json({result: response});
-     //console.log("aaaaa", response);
      
  });
 
@@ -18,7 +19,6 @@ router.get('/getEntrepreneurs', async (req, res) =>{
     let project = new ProjectModel(req.body, t_project);
     const response = await project.getListProject(req.query.nameAsesor);
      res.json({result: response});
-     
  });
 
 
@@ -63,10 +63,9 @@ router.get('/getProject', async (req, res)=>{
 
     console.log(req.query.id);
     const response = await project.getProjectById(req.query.id);
-    const response2 =  await project.getAssignment(req.query.id);
     const phases = (response[0].methodologicalPhases).split(',');
 
-    const methodology = await findMethodology(response2, phases, user, project, req.query.id);
+    const methodology = await findMethodology(phases, project, req.query.id);
 
     delete response[0]['methodologicalPhases'];
 
@@ -79,35 +78,12 @@ router.get('/getProject', async (req, res)=>{
     });
 });
 
-async function findMethodology(data, phases, user, project, id) {
+async function findMethodology( phases, project, id) {
     let content = [];
-    let userFound;
     for(let i=0; i < phases.length; i++){
         const result = await project.getActivitiesByIdProject(phases[i], id);
         const amountComments = await getCountComments(phases[i], id, project);
-        console.log("amountActivities > ", result[0].amount , " idProject > ", id, " phase > ", phases[i]);
-        for(let j=0; j < data.length; j++) {
-            if(phases[i].includes(data[j].phaseName)){
-                userFound =  await 
-                user.getUserById(data[i].idAdviser);
-                content.push({
-                   nameAssigned : userFound[0].name,
-                   image: userFound[0].image,
-                   phase: phases[i],
-                   amountActivities: result[0].amount,
-                   amountComments: amountComments
-                });
-                   break;
-           }else {
-               content.push({
-                   nameAssigned : "",
-                   image: "",
-                   phase: phases[i],
-                   amountActivities: result[0].amount,
-                   amountComments:amountComments});
-                   break;
-           }
-        } 
+       
         content.push({
             nameAssigned : "",
             image: "",
@@ -124,9 +100,9 @@ async function getCountComments(phase, id, project) {
     const ids = await project.getIdActivities(phase, id);
     console.log("ids >", ids);
     let amount = 0;
-    for(let i=0; i < ids.length; i ++) {
+    for(let i=0; i < ids.length; i++) {
         temp = await project.getCommentsByIdActivity(ids[i].idActivities);
-        amount =+ temp[0].amount;
+        amount = amount + temp[0].amount;
 
     }
 
@@ -258,7 +234,7 @@ router.get('/getComments', async (req, res) => {
     });
 });
 
-router.post('/createAssignment', async (req, res) =>{
+router.post('/createAssignment', async (req, res) => {
     console.log(req.body);
     const project = new ProjectModel();
     const exists =  await project.getAssignmentByAll(req.body);
@@ -274,6 +250,53 @@ router.post('/createAssignment', async (req, res) =>{
     }
    
 
+});
+
+router.get('/getAssignment', async (req, res)=>{
+    const project = new ProjectModel();
+    const user = new UserModel();
+    if(req.query.id != "" && req.query.phase != "") {
+        try {
+            const response = await project.getAssignment(req.query.id, req.query.phase);
+            const userFound = await user.getUserById(response[0].idAdviser);
+            res.json({
+                result: {
+                    nameAssigned: userFound[0].name,
+                    image: userFound[0].image,
+                }
+            })
+        } catch (error) {
+            res.json({
+                result: {
+                    nameAssigned: "",
+                    image: null
+                }
+            })
+        }
+
+    }else {
+        res.json({
+            result: {
+                nameAssigned: "",
+                image: null
+            }
+        })
+    }
+});
+
+router.post('/uploadFile', fileServer.middleware().single('uploadFile'), (req, res)=>{
+    console.log("uploadFile", req.file.filename);
+    res.json({
+        image:  req.file.path
+    })
+});
+
+router.get('/getActivity', async (req, res) =>{
+    const project = new ProjectModel();
+    const response = await project.getActivityById(req.query.id);
+    res.json({
+        result: response
+    });
 });
 
 module.exports =  router;
