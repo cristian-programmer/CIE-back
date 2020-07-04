@@ -97,6 +97,7 @@ class StructureDB {
              executionWeek VARCHAR(50) NOT NULL,
              phase VARCHAR(100) NOT NULL,
              idProject INT NOT NULL,
+             description VARCHAR(200) NULL,
             PRIMARY KEY (idActivities))`).then(res =>{ console.info('create table activities')})
         .catch(error =>{console.error(error)})
     }
