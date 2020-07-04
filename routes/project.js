@@ -21,7 +21,6 @@ router.get('/getEntrepreneurs', async (req, res) =>{
      res.json({result: response});
  });
 
-
 router.get('/getProjects', async (req, res) =>{
    const project = new ProjectModel();
    const typeUser =  req.query.type;
