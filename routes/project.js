@@ -347,5 +347,43 @@ router.get('/getAmountStateActivities', async (req, res) =>{
     
 });
 
+router.post('/updateRate', async (req, res) =>{
+    const project = new ProjectModel();
+    console.log("updateRate >>> ", req.body);
+    const response =  await project.updateRateActivity(req.body);
+    res.json({result: response});
+});
+
+router.get('/getAmountRate', async (req, res) =>{
+    const project = new ProjectModel();
+    const response = await project.getAllActivitiesByIdProject(req.query.idProject);
+    const labels = new Array('Malo', 'Regular', 'Bueno', 'Excelente');
+    let bad = 0;
+    let regular = 0;
+    let good = 0;
+    let excelent = 0;
+
+    for(let i=0; i < response.length; i++) {
+        rate = response[i].rate;
+        if(rate == 1){
+            bad++;
+        }else if (rate == 2){
+            regular++;
+
+        }else if(rate==3){
+            good++;
+        }else if(rate==4){
+            excelent++;
+        }
+    }
+
+    const data = new Array(bad, regular, good, excelent);
+
+    res.json({
+        labels: labels,
+        data: data
+    })
+});
+
 
 module.exports =  router;

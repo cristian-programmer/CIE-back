@@ -172,6 +172,13 @@ class ProjectModel {
         return await this.database.queryCommand(`SELECT * FROM mydb.activities WHERE idProject=${id}`)
     }
 
+    async updateRateActivity(data){
+        const result = await this.database.queryCommand(`UPDATE mydb.activities SET rate=${data.rate}
+         WHERE idActivities=${data.id}`);
+
+         return result['changedRows'] == 1 ? 'edited' : 'not-edited';
+    }
+
 
 }
 
