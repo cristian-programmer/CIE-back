@@ -168,6 +168,10 @@ class ProjectModel {
         return await this.database.queryCommand(`SELECT * FROM mydb.activities WHERE idActivities=${id}`);
     }
 
+    async getAllActivitiesByIdProject(id) {
+        return await this.database.queryCommand(`SELECT * FROM mydb.activities WHERE idProject=${id}`)
+    }
+
 
 }
 
