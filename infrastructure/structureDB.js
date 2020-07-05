@@ -238,7 +238,8 @@ class StructureDB {
          ('Config de Proyectos', 'adviser', '/admin/proyect',  1),
          ('Trazabilidad de eventos', 'assistant', '/admin/eventTraceability',  1),
          ('Asistencia', 'assistant', '/admin/assistance',  1),
-         ('Traz. de proyectos', 'adviser', '/admin/trazproject/', 1 )
+         ('Traz. de proyectos', 'adviser', '/admin/trazproject/', 1 ),
+         ('Traz. de proyectos', 'administrator', '/admin/trazproject/', 1 )
        `).then(res =>{
            console.info('create routers of the modules');
        }).catch(error=>{
@@ -248,10 +249,11 @@ class StructureDB {
 
     insertDefaultUsers(){
         this.database.queryCommand(`INSERT INTO mydb.Users (name, email, username, role, 
-            relationshipUniversity, password) value ('administador', 'cvg97@misena.edu.co', 'admin', 'administrator', 
-            'teacher', 'system1'), 
-            ('asesor', 'cvg97@misena.edu.co', 'asesor', 'adviser', 
-            'teacher', 'system1')`).then(res =>{
+            relationshipUniversity, password) value 
+            ('administador', 'cvg97@misena.edu.co', 'admin', 'administrator', 'teacher', 'system1'), 
+            ('asesor', 'cvg97@misena.edu.co', 'asesor', 'adviser', 'teacher', 'system1'),
+            ('emprendedor', 'cvg97@misena.edu.co', 'empre', 'entrepreneur' , 'student', 'system1' )`)
+            .then(res =>{
                 console.info('create users by default');
             }).catch(error =>{
                 console.error(error);

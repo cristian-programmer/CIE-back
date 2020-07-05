@@ -34,7 +34,7 @@ router.get('/getProjects', async (req, res) =>{
         } catch (error) {
             console.log(error);
         }
-   }else {
+   }else if (typeUser == 'administrator') {
         try {
             response = await project.getAllProjects();
             res.json({
@@ -43,6 +43,33 @@ router.get('/getProjects', async (req, res) =>{
         } catch  (error) {
             console.log(error);
         }
+   }else if (typeUser == 'entrepreneur') {
+       response = await project.getAllProjects();
+       let invited = [] ;
+       for(let i=0; i < response.length; i++){
+        
+        let entrepreneurs = (response[i].entrepreneurs).split(',');
+        console.log("1 entrepreneurs >>>>", response[i]);
+        if(entrepreneurs != undefined){
+            if(entrepreneurs.includes(name)) {
+                console.log(" 2 entrepreneurs >>>>", response[i] );
+                invited.push(response[i]);
+                
+            }
+        }
+
+       }
+       console.log("invited >>>", invited.length);
+
+       if(invited.length == 0 ){
+           invited.push({
+            idProject: 1,
+            projectName : 'No ha sido invitado a un proyecto'
+           });
+       }
+       res.json({
+           result: invited
+       });  
    }
    
 });
@@ -155,16 +182,23 @@ router.get('/getActivityByProjectAndPhase', async (req, res )=> {
     let activities = [];
     let names = [];
     const response = await project.getActiviesByProject(req.query.id, req.query.phase);
-    console.log(response);
+    console.log("get activitivities >>>", response);
     if(response.length > 0){
         let nameshort='';  
         for(let i=0; i < response.length; i++) { // 2
           
             console.log(response[i].responsables);
             const responsables = response[i].responsables.split(',')
+            console.log("responsables >>>", responsables);
             for(let j=0; j < responsables.length; j++){
-                nameshort = responsables[j].split(" ")[0].substring(0,1);
-                nameshort = (nameshort + responsables[j].split(" ")[1].substring(0,1));
+                console.log("split('') >>" , responsables[j].split(" "));
+                if( responsables[j].split(" ").length > 2){
+                    nameshort = responsables[j].split(" ")[0].substring(0,1);
+                    nameshort = (nameshort + responsables[j].split(" ")[1].substring(0,1));
+                }else{
+                    nameshort = responsables[j].split("")[0];
+                }
+                
                 names.push({
                     nameshort: nameshort,
                     responsable: responsables[j]
@@ -292,6 +326,7 @@ router.post('/uploadFile', fileServer.middleware().single('uploadFile'), (req, r
 
 router.get('/getActivity', async (req, res) =>{
     const project = new ProjectModel();
+    console.log("here >>>", req.query.id);
     const response = await project.getActivityById(req.query.id);
     res.json({
         result: response
