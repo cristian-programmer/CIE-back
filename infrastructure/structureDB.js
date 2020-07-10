@@ -223,6 +223,20 @@ class StructureDB {
         .catch(error => {console.error(error)});
     }
 
+    createTableNotifications(){
+        this.database.queryCommand(`CREATE TABLE IF NOT EXISTS mydb.notifications (
+            idnotifications INT NOT NULL AUTO_INCREMENT,
+            idUsersTo INT NOT NULL,
+            message VARCHAR(200) NOT NULL,
+            idUsersFrom INT NOT NULL,
+            link VARCHAR(100) NULL,
+            PRIMARY KEY (idnotifications))`).then(res => {
+                console.info('create table notifications');
+            }).catch(error =>{
+                console.error(error);
+            });
+    }
+
     insertModules(){
         this.database.queryCommand(`INSERT INTO mydb.SystemModules (nameModule, role, route, active)
         values ('Inicio', 'assistant', '/admin',  1),
@@ -285,7 +299,7 @@ class StructureDB {
         this.createTableActivityStatistics();
         this.createTableComments();
         this.createTableMethodology();
-        
+        this.createTableNotifications();
     }
     
 }

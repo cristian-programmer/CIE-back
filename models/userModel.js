@@ -74,6 +74,10 @@ class UserModel{
         return await this.database.queryCommand(`SELECT * FROM mydb.Users WHERE role="adviser"`);
     }
 
+    async getUserByName(name) {
+        return await this.database.queryCommand(`SELECT * FROM mydb.Users WHERE name="${name}"`);
+    }
+
 
 }
 
