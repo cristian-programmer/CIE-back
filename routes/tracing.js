@@ -3,9 +3,9 @@ let router = app.Router();
 
 const TracingModel = require('./../models/tracingModel').TracingModel;
 
-router.post('/getAttendance', async (req, res)=>{
+router.get('/getAttendance', async (req, res)=>{
     let attendance =  new TracingModel();
-    response = await attendance.getAllAttendance(req.body.id);
+    response = await attendance.getAllAttendance(req.query.id);
     res.json({result : response});
 }); 
 

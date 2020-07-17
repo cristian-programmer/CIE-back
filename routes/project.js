@@ -1,9 +1,10 @@
 let app = require('express');
+const { response } = require('express');
 let router = app.Router();
 const ProjectModel = require('./../models/ProjectModel').ProjectModel;
 const UserModel = require('./../models/userModel').UserModel; 
 const ManagerFile = require('./../infrastructure/ManagerFilesServer').ManagerFileServer;
-
+const moment = require('moment');
 const fileServer = new ManagerFile();
 fileServer.saveFileInPathPublic();
 const t_project='project', t_activity="activity";
@@ -209,6 +210,7 @@ router.get('/getActivityByProjectAndPhase', async (req, res )=> {
             activities.push({
                 id: response[i].idActivities,
                 nameActivity: response[i].nameActivity,
+                description: response[i].description,
                 state: response[i].state,
                 phase: response[i].phase,
                 profile: names
@@ -420,5 +422,18 @@ router.get('/getAmountRate', async (req, res) =>{
     })
 });
 
+router.get('/phases',async (req, res) =>{
+    const project = new ProjectModel();
+    const response =  await project.getPhases(req.query.id);
+    res.json({
+        result: response[0]
+    })
+});
+
+router.get('/activities/gantt', async (req, res) =>{
+    const project = new ProjectModel();
+    const response = await project.getActiviesByProject(req.query.id, req.query.phase);
+    res.json({result: response});
+});
 
 module.exports =  router;

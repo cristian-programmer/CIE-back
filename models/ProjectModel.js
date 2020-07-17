@@ -179,6 +179,11 @@ class ProjectModel {
          return result['changedRows'] == 1 ? 'edited' : 'not-edited';
     }
 
+    async getPhases(id) {
+        return this.database.queryCommand(`SELECT methodologicalPhases FROM mydb.projects
+         WHERE idProject=${id}`)
+    }
+
 
 }
 
