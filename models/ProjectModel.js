@@ -34,29 +34,29 @@ class ProjectModel {
         }
     }
     async getAllEntre(){         
-        return await this.database.queryCommand(`SELECT * FROM mydb.users 
+        return await this.database.queryCommand(`SELECT * FROM mydb.Users 
         WHERE role="entrepreneur"`);    
      }
 
     async getAllProjects(){
-        return await this.database.queryCommand(`SELECT * FROM mydb.projects`)   
+        return await this.database.queryCommand(`SELECT * FROM mydb.Projects`)   
     }
 
 
     async getListProject(){
         console.log("ooooo", this.currentAdvisor);
         
-        return await this.database.queryCommand(`SELECT * FROM mydb.projects where currentAdvisor= "${this.currentAdvisor}"`);
+        return await this.database.queryCommand(`SELECT * FROM mydb.Projects where currentAdvisor= "${this.currentAdvisor}"`);
     }
   
      async getPorjectsByCurrentAvisor(name){
-        return await this.database.queryCommand(`SELECT * FROM mydb.projects WHERE 
+        return await this.database.queryCommand(`SELECT * FROM mydb.Projects WHERE 
             currentAdvisor="${name}"`);
     }
 
     async create(){
 
-        const result = await this.database.queryCommand(`INSERT INTO mydb.projects (projectName, currentAdvisor, 
+        const result = await this.database.queryCommand(`INSERT INTO mydb.Projects (projectName, currentAdvisor, 
             previusAdvisers, methodologicalPhases, entrepreneurs ) VALUES("${this.projectName}", "${this.currentAdvisor}", 
             "${this.previusAdvisers}", "${this.methodologicalPhases}", "${this.entrepreneurs}")`);
 
@@ -64,12 +64,12 @@ class ProjectModel {
     }
 
     async getParticipans(id){
-        return await this.database.queryCommand(`SELECT currentAdvisor, entrepreneurs FROM mydb.projects
+        return await this.database.queryCommand(`SELECT currentAdvisor, entrepreneurs FROM mydb.Projects
         WHERE idProject=${id}`);
     }
 
     async deleteProject(id){
-        const result = await this.database.queryCommand(`DELETE FROM mydb.projects WHERE idProject = ${id}`);
+        const result = await this.database.queryCommand(`DELETE FROM mydb.Projects WHERE idProject = ${id}`);
         console.log(result);
         return result['affectedRows'] == 1 ? 'erased' :  'not-erased';
     }
@@ -77,7 +77,7 @@ class ProjectModel {
     async editProject(id){
         console.log("projectooo", this.projectName);
         
-        const result = await this.database.queryCommand(`UPDATE mydb.projects SET projectName="${this.projectName}",
+        const result = await this.database.queryCommand(`UPDATE mydb.Projects SET projectName="${this.projectName}",
         currentAdvisor="${this.currentAdvisor}", previusAdvisers="${this.previusAdvisers}", methodologicalPhases="${this.methodologicalPhases}",
         entrepreneurs="${this.entrepreneurs}" WHERE idProject=${id} `);
         console.log(result);
@@ -85,18 +85,18 @@ class ProjectModel {
     }
 
     async getProjectById(id){
-        return await this.database.queryCommand(`SELECT * FROM mydb.projects WHERE idProject=${id}`);
+        return await this.database.queryCommand(`SELECT * FROM mydb.Projects WHERE idProject=${id}`);
     }
 
     async getActiviesByProject(id, phase){
         console.log(id, " ", phase);
-        return await this.database.queryCommand(`SELECT * FROM mydb.activities WHERE 
+        return await this.database.queryCommand(`SELECT * FROM mydb.Activities WHERE 
         idProject=${id} and phase="${phase}"`);
 
     }
 
     async createActivityByProject(){
-        const result =  await this.database.queryCommand(`INSERT INTO mydb.activities 
+        const result =  await this.database.queryCommand(`INSERT INTO mydb.Activities 
         (nameActivity, responsables, state, executionWeek, phase, idProject, description, resources) values ("${this.nameActivity}",
        "${this.responsables}", "${this.state}", "${this.executionWeek}", "${this.phase}", ${this.id}, "${this.description}", "${PATH_CLIENT}${this.resources}")`);
 
@@ -109,21 +109,21 @@ class ProjectModel {
     }
 
     async getAllParticipants(){
-        return await this.database.queryCommand(`SELECT entrepreneurs, currentAdvisor, projectName FROM mydb.projects`)
+        return await this.database.queryCommand(`SELECT entrepreneurs, currentAdvisor, projectName FROM mydb.Projects`)
     }
 
     async getActivitiesByPhase(phase){
-       return await this.database.queryCommand(`SELECT * from mydb.activities WHERE phase="${phase}"`);
+       return await this.database.queryCommand(`SELECT * from mydb.Activities WHERE phase="${phase}"`);
     }
 
     async createCommentary(data) {
-        const result = await this.database.queryCommand(`INSERT INTO mydb.comments (idUsers, commentary, idActivity) 
+        const result = await this.database.queryCommand(`INSERT INTO mydb.Comments (idUsers, commentary, idActivity) 
         values ("${data.idUsers}", "${data.commentary}", ${data.idActivity})`);
         return result['changedRows'] == 1 ?  'edited' : 'not-edited'; 
     }
 
     async getCommentsByIdActivity(id) {
-        return await this.database.queryCommand(`SELECT COUNT(*) AS amount FROM mydb.comments
+        return await this.database.queryCommand(`SELECT COUNT(*) AS amount FROM mydb.Comments
          WHERE idActivity=${id}`);
     }
 
@@ -150,37 +150,37 @@ class ProjectModel {
     }
 
     async getActivitiesByIdProject(phase, id){
-        return await this.database.queryCommand(`SELECT COUNT(*) AS amount FROM mydb.activities 
+        return await this.database.queryCommand(`SELECT COUNT(*) AS amount FROM mydb.Activities 
         WHERE idProject=${id} AND phase="${phase}"`);
     }
 
     async getIdActivities(phase, id){
-        return await this.database.queryCommand(`SELECT idActivities FROM mydb.activities 
+        return await this.database.queryCommand(`SELECT idActivities FROM mydb.Activities 
         WHERE idProject=${id} AND phase="${phase}"`);
     }
 
     async getCommentsIdUsers(id) {
-        return await this.database.queryCommand(`SELECT * FROM mydb.comments
+        return await this.database.queryCommand(`SELECT * FROM mydb.Comments
          WHERE idActivity=${id}`);
     }
 
     async getActivityById(id) {
-        return await this.database.queryCommand(`SELECT * FROM mydb.activities WHERE idActivities=${id}`);
+        return await this.database.queryCommand(`SELECT * FROM mydb.Activities WHERE idActivities=${id}`);
     }
 
     async getAllActivitiesByIdProject(id) {
-        return await this.database.queryCommand(`SELECT * FROM mydb.activities WHERE idProject=${id}`)
+        return await this.database.queryCommand(`SELECT * FROM mydb.Activities WHERE idProject=${id}`)
     }
 
     async updateRateActivity(data){
-        const result = await this.database.queryCommand(`UPDATE mydb.activities SET rate=${data.rate}
+        const result = await this.database.queryCommand(`UPDATE mydb.Activities SET rate=${data.rate}
          WHERE idActivities=${data.id}`);
 
          return result['changedRows'] == 1 ? 'edited' : 'not-edited';
     }
 
     async getPhases(id) {
-        return this.database.queryCommand(`SELECT methodologicalPhases FROM mydb.projects
+        return this.database.queryCommand(`SELECT methodologicalPhases FROM mydb.Projects
          WHERE idProject=${id}`)
     }
 

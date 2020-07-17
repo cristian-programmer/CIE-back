@@ -8,13 +8,13 @@ class NotificationModel {
     }
 
     createNotification(data){
-        const result = this.database.queryCommand(`INSERT INTO mydb.notifications (idUsersTo, message, idUsersFrom, link)
+        const result = this.database.queryCommand(`INSERT INTO mydb.Notifications (idUsersTo, message, idUsersFrom, link)
         values (${data.idUsersTo}, "${data.message}", ${idUsersFrom}, "link")`);
         return result['affectedRows'] == 1 ? 'created' : 'not-create';
     }
 
     getNotificationsByIdUsersTo() {
-        return this.database.queryCommand(`SELECT * FROM mydb.notifications WHERE`)
+        return this.database.queryCommand(`SELECT * FROM mydb.Notifications WHERE`)
     }
 }
 

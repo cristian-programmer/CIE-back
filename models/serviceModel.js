@@ -15,11 +15,11 @@ class  ServiceModel{
     }
 
     async getServices(){
-        return this.database.queryCommand(`SELECT * FROM mydb.services`);
+        return this.database.queryCommand(`SELECT * FROM mydb.Services`);
     }
 
     async createService(){
-        const result = await this.database.queryCommand(`insert into mydb.services
+        const result = await this.database.queryCommand(`insert into mydb.Services
         (serviceName, serviceDescription, imageUrl) values 
         ("${this.serviceName}", "${this.serviceDescription}", "${this.serviceImage}")
         `);
@@ -28,13 +28,13 @@ class  ServiceModel{
     }
 
     async deleteService(id){
-        const result = await this.database.queryCommand(`DELETE FROM mydb.services WHERE idServices = ${id}`);
+        const result = await this.database.queryCommand(`DELETE FROM mydb.Services WHERE idServices = ${id}`);
         console.log(result);
         return result['affectedRows'] == 1 ? 'erased' :  'not-erased';
     }
 
     async editService(id){
-        const result = await this.database.queryCommand(`UPDATE mydb.services SET serviceName="${this.serviceName}",
+        const result = await this.database.queryCommand(`UPDATE mydb.Services SET serviceName="${this.serviceName}",
         serviceDescription="${this.serviceDescription}" WHERE idServices=${id} `);
         console.log(result);
         return result['changedRows'] == 1 ? 'edited' :  'not-edited';
