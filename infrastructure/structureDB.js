@@ -145,7 +145,7 @@ class StructureDB {
 
     createTableLastActivitySystem(){
 
-        this.database.queryCommand(`CREATE TABLE IF NOT EXISTS mydb.lastActivitySystem (
+        this.database.queryCommand(`CREATE TABLE IF NOT EXISTS mydb.LastActivitySystem (
             idlastActivitySystem INT NOT NULL AUTO_INCREMENT,
             idUser INT NOT NULL,
             activity VARCHAR(45) NOT NULL,
@@ -158,7 +158,7 @@ class StructureDB {
 
     createTableEventStatistics(){
         
-        this.database.queryCommand(`CREATE TABLE IF NOT EXISTS mydb.eventStatistics (
+        this.database.queryCommand(`CREATE TABLE IF NOT EXISTS mydb.EventStatistics (
             ideventStatistics INT NOT NULL AUTO_INCREMENT,
             numberRegistered INT NULL,
             numberAttendees INT NULL,
@@ -170,7 +170,7 @@ class StructureDB {
 
     createTableMeeting(){
         
-        this.database.queryCommand(`CREATE TABLE IF NOT EXISTS mydb.meeting (
+        this.database.queryCommand(`CREATE TABLE IF NOT EXISTS mydb.Meeting (
             idmeeting INT NOT NULL AUTO_INCREMENT,
             startTime VARCHAR(45) NOT NULL,
             endTime VARCHAR(45) NOT NULL,
@@ -183,7 +183,7 @@ class StructureDB {
 
     createTableGuests(){
         
-        this.database.queryCommand(`CREATE TABLE IF NOT EXISTS mydb.guests (
+        this.database.queryCommand(`CREATE TABLE IF NOT EXISTS mydb.Guests (
             idguests INT NOT NULL AUTO_INCREMENT,
             idmeeting INT NOT NULL,
             fullname VARCHAR(100) NOT NULL,
@@ -224,7 +224,7 @@ class StructureDB {
     }
 
     createTableNotifications(){
-        this.database.queryCommand(`CREATE TABLE IF NOT EXISTS mydb.notifications (
+        this.database.queryCommand(`CREATE TABLE IF NOT EXISTS mydb.Notifications (
             idnotifications INT NOT NULL AUTO_INCREMENT,
             idUsersTo INT NOT NULL,
             message VARCHAR(200) NOT NULL,
