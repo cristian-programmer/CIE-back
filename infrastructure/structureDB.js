@@ -107,18 +107,18 @@ class StructureDB {
             
         this.database.queryCommand(`CREATE TABLE IF NOT EXISTS mydb.Configurations (
             idConfigurations INT NOT NULL AUTO_INCREMENT,
-            emailService VARCHAR(100) NOT NULL,
-            keySocial VARCHAR(500) NOT NULL,
+            emailNotification VARCHAR(100) NOT NULL,
+            emailServer VARCHAR(30) NOT NULL,
             PRIMARY KEY (idConfigurations))`).then(res =>{ console.info('create table configuration')})
         .catch(error =>{console.error(error)})
     }
 
     createTableSocialNetwork(){
-        this.database.queryCommand(`CREATE TABLE IF NOT EXISTS mydb.SocialNetwork (
+        this.database.queryCommand(`CREATE TABLE IF NOT EXISTS mydb.SocialNetwork(
             idSocial INT NOT NULL AUTO_INCREMENT,
-            keySocial VARCHAR(500) NOT NULL,
-            content VARCHAR(2000) NOT NULL,
-            name VARCHAR(45) NOT NULL,
+            accessToken VARCHAR(500) NOT NULL,
+            idPage VARCHAR(30) NOT NULL,
+            emailPage VARCHAR(45) NOT NULL,
             PRIMARY KEY (idSocial))`).then(res =>{ console.info('create table soocialNetwork')})
         .catch(error =>{console.error()})
     }
