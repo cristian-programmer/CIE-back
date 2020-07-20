@@ -2,11 +2,12 @@ let express = require('express');
 
 const ConfigurationModel = require('./../models/configModel').Configuration;
 
-router =  express.Router();
+const config = new ConfigurationModel();
+const router =  express.Router();
 
 
 router.get('/getSystemModules', async (req, res)=>{ 
-    let config = new ConfigurationModel();
+    
     response = await config.getSystemModules();
     console.log(response);
 
@@ -38,16 +39,71 @@ router.post('/createModules', async (req, res)=>{
 });
 
 router.post('/updateVisible', async (req, res)=>{
-    let config = new ConfigurationModel();
     response = await config.updateVisible(req.body);
     res.json({result: response});
 });
 
 router.get('/getModulesByRole', async (req, res)=>{
-  
-    let config = new ConfigurationModel();
     response = await config.getModulesByRole(req.query.role);
     res.json({result: response});
+});
+
+router.get('/facebook', async (req, res) =>{    
+    response = await config.getConfigFacebook();
+    res.json({
+        result: response
+    });
+});
+
+router.post('/facebook', async (req, res)=> {
+    try {
+        const acounts = await config.getConfigFacebook();
+        let response = null;
+        if(acounts.length > 0) {
+            response = await config.updateConfigFacebook(req.body);
+        }else {
+            response = await config.createConfigFacebook(req.body);
+        } 
+    
+        res.json({
+            result: response
+        });
+    } catch (error) {
+        console.error(error);
+    }
+   
+});
+
+
+router.get('/email', async (req, res) => {
+    const response = await config.getConfigEmail();
+    res.json({
+        result: response
+    });
+});
+
+router.post('/email', async (req, res) => {
+    try {
+        const acounts = await config.getConfigEmail();
+        let response = null;
+        if(acounts.length > 0) {
+            response = await config.updateConfigEmail(req.body);
+        }else {
+            response = await config.createConfigEmail(req.body);
+        } 
+
+        res.json({
+            result: response
+        });
+    } catch (error) {
+        console.error(error);
+    }
+    
+});
+
+router.post('/deleteUser', async (req, res) => {
+    const response = await config.deleteUser(req.body.id);
+    res.json({ result:response });
 });
 
 
