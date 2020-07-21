@@ -16,6 +16,11 @@ var StructureDB = require('./infrastructure/structureDB').StructureDB;
 var SocketServer = require('./infrastructure/SocketServer').SocketServer;
 
 console.info('Init Server PORT ', process.env.PORT);
+console.info('Init Server DB_USER ', process.env.DB_USER);
+console.info('Init Server DB_PASS ', process.env.DB_PASS);
+console.info('Init Server DB_HOST ', process.env.DB_HOST);
+console.info('Init Server DB_PORT ', process.env.DB_PORT);
+console.info('Init Server TOKEN ', process.env.TOKEN);
 
 const structureDB =  new StructureDB();
 const sockServer = new SocketServer();
