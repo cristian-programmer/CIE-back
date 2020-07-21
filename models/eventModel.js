@@ -54,19 +54,19 @@ class EvenModel {
     }
 
     async createEventStatistics(idEvent){
-        const result = await this.database.queryCommand(`INSERT INTO mydb.Eventstatistics (numberRegistered, numberAttendees, idEvent) 
+        const result = await this.database.queryCommand(`INSERT INTO mydb.EventStatistics (numberRegistered, numberAttendees, idEvent) 
             values (${0}, ${0}, ${idEvent})`);
             return result['affectedRows'] == 1 ? 'created' :  'not-created'; 
     }
 
     async getNumberByEvent(id, type){
-        return await this.database.queryCommand(`SELECT ${type == 1 ? 'numberRegistered' : 'numberAttendees'}  FROM mydb.Eventstatistics
+        return await this.database.queryCommand(`SELECT ${type == 1 ? 'numberRegistered' : 'numberAttendees'}  FROM mydb.EventStatistics
             WHERE idEvent=${id}`);
     }
 
     async updateEventStatics(counter, id, type){
        
-        const result = await this.database.queryCommand(`UPDATE mydb.Eventstatistics
+        const result = await this.database.queryCommand(`UPDATE mydb.EventStatistics
             SET ${type== 1 ? 'numberRegistered': 'numberAttendees'}=${counter}
             WHERE idEvent=${id} `);
            console.log(result);
@@ -79,7 +79,7 @@ class EvenModel {
     }
 
     async getEventStatistcs(){
-        return await this.database.queryCommand(`SELECT * FROM mydb.Eventstatistics ORDER BY idEventStatistics DESC LIMIT 3`);
+        return await this.database.queryCommand(`SELECT * FROM mydb.EventStatistics ORDER BY idEventStatistics DESC LIMIT 3`);
     }
 
     async updateEventImage(data) {
@@ -90,7 +90,7 @@ class EvenModel {
     }
 
     async getEventStatistcsById(id){
-        return await this.database.queryCommand(`SELECT * FROM mydb.Eventstatistics
+        return await this.database.queryCommand(`SELECT * FROM mydb.EventStatistics
          WHERE idEvent=${id}`);
     }
 

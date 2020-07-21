@@ -4,9 +4,14 @@ let router = app.Router();
 const TracingModel = require('./../models/tracingModel').TracingModel;
 
 router.get('/getAttendance', async (req, res)=>{
-    let attendance =  new TracingModel();
-    response = await attendance.getAllAttendance(req.query.id);
-    res.json({result : response});
+    try {
+        let attendance =  new TracingModel();
+        response = await attendance.getAllAttendance(req.query.id);
+        res.json({result : response});
+    } catch (error) {
+        console.error(error);
+    }
+   
 }); 
 
 
