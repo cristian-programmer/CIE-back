@@ -71,6 +71,7 @@ class StructureDB {
             phoneNumber VARCHAR(45) NOT NULL,
             confirmedAssistance TINYINT(1) NULL,
             attended TINYINT NULL,
+            idEvent VARCHAR(45) NULL,
             PRIMARY KEY (idattendance))`).then(res =>{ console.info('create table attendance')})
         .catch(error =>{console.error(error)})
     }
