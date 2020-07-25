@@ -19,6 +19,9 @@ class SocketServer {
             this.registerUser(socket);
             this.inviteProject(socket);
             this.createActivity(socket);
+            socket.on('/test', () => {
+                console.log("test");
+            })
         });
     }
 
