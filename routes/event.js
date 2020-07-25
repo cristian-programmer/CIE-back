@@ -117,4 +117,5 @@ router.get('/getRegisteredByEvent', async (req, res)=>{
     
     console.log(response);
 });
+
 module.exports = router;

@@ -20,9 +20,11 @@ class  TracingModel{
     return await this.database.queryCommand(`SELECT * FROM mydb.events`);
     }
 
-    async updateAttendance(id){    
-        const result = await this.database.queryCommand(`UPDATE mydb.Attendance SET confirmedAssistance ="${this.confirmedAssistance}" WHERE idattendance=${id} `);
+    async updateAttendance(id, confirmed){    
+        const result = await this.database.queryCommand(`UPDATE mydb.Attendance SET confirmedAssistance=${confirmed == true ? 1 : 0} WHERE idattendance=${id} `);
         console.log(result);
+        console.log(`UPDATE mydb.Attendance SET 
+        confirmedAssistance=${confirmed == true ? 1 : 0} WHERE idattendance=${id}`);
         return result['changedRows'] == 1 ? 'edited' :  'not-edited';
 
     }
@@ -51,9 +53,14 @@ class  TracingModel{
         
         return result['affectedRows'] == 1 ? 'created' :  'not-created';
     }
+
+    async getAmountConfirmed(id) {
+        return await this.database.queryCommand(`SELECT COUNT(*) AS 
+        amount FROM  mydb.Attendance WHERE idEvent=${id} AND confirmedAssistance=1`)
+    }
 }
 
-    module.exports = {
-        TracingModel : TracingModel
-    }
+module.exports = {
+    TracingModel : TracingModel
+}
     

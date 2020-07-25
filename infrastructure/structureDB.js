@@ -244,7 +244,6 @@ class StructureDB {
          ('Gestion de proyectos', 'adviser', '/admin/management',  1),
          ('Eventos', 'assistant', '/admin/events',  1),
          ('Servicios', 'assistant', '/admin/services',  1),
-         ('Seguimiento', 'assistant', '/admin/tracing',  1),
          ('Calendario', 'assistant', '/admin/calendar',  1),
          ('Calendario', 'entrepreneur', '/admin/calendar',  1),
          ('Calendario', 'adviser', '/admin/calendar',  1),
