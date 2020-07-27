@@ -8,10 +8,9 @@ const managerFilesServer = require('../infrastructure/ManagerFilesServer').Manag
 const PORTCLIENT = 3000;
 
 const jwt = new JsonWebToken();
-const multer = require('multer');
 const manager = new managerFilesServer();
 
-manager.saveFileInPathPublic();
+manager.prepareStorageS3();
 
 
 let idProfile = 0;
@@ -67,15 +66,39 @@ router.post('/writeIdProfile', (req, res) =>{
     result: 'assigned'
   });
 });
+
+function getKeyUrl(url) {
+  const content = url.split('/');
+
+  return content[content.length -1];
+}
+
 router.post('/uploadProfile', manager.middleware().single('profile'),  async (req, res)=>{
   console.log(req.body);
   let user = new userModel();
-  console.log('path', req.file.path);
-  response = await user.updateProfileImage({
-    path: `http://localhost:${PORTCLIENT}/${req.file.originalname}`,
-    id: idProfile
-  });
+  let response = null;
+  
+  const userFound = await user.getUserById(idProfile);
+  console.log('user found  >>>> ', userFound[0].image);
+  if(userFound[0].image != null) {
+    const key = getKeyUrl(userFound[0].image);
+    const deleted = await manager.deleteS3File(key);
+    console.log("deleted >>>> ", deleted);
 
+    const uploaded = await manager.uploadS3File(req.file);
+    response = await user.updateProfileImage({
+      path:uploaded.Location,
+      id: idProfile
+    });
+  }else {
+    const uploaded = await manager.uploadS3File(req.file);
+    console.log("s3 >>>>  ", uploaded.Location);
+    response = await user.updateProfileImage({
+      path: uploaded.Location ,
+      id: idProfile
+    });
+  }
+  
   if(response == 'edited') {
     res.json({
       image: req.file.path
