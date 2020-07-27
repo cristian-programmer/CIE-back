@@ -13,6 +13,9 @@ module.exports = {
               "DB_PORT":3307,
               "TOKEN": "key",
               "PORT": 3005,
+              "AWS_ID": "AKIAJBVZIXX5KTIDHZWQ",
+              "AWS_TOKEN": "wpYU+9Wpe13xklWGg7Qn+2gi7TJLy7/ay4HvTlp9",
+              "AWS_BUCKET": "s3-gestioncie"
             },
           env_production: {
               "NODE_ENV": "production",
@@ -22,6 +25,9 @@ module.exports = {
               "DB_PORT":3306,
               "TOKEN": "key",
               "PORT": 3005,
+              "AWS_ID": "AKIAJBVZIXX5KTIDHZWQ",
+              "AWS_TOKEN": "wpYU+9Wpe13xklWGg7Qn+2gi7TJLy7/ay4HvTlp9",
+              "AWS_BUCKET": "s3-gestioncie"
           }
         }
     ]
