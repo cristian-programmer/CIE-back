@@ -1,3 +1,4 @@
 /node_modules
 .env
 mysql.sql
+ecosystem.config.js
