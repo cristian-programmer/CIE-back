@@ -7,7 +7,8 @@ const PORT = 4000;
 class SocketServer {
 
     constructor(){
-        this.socket = new Socket(PORT); 
+        this.socket = new Socket(PORT);
+        this.socket.set('origins', 'http://localhost:3000'); 
         this.userModel = new UserModel();
         this.usersActives = new Map();
         this.email = new ManagerEmail();
@@ -19,9 +20,10 @@ class SocketServer {
             this.registerUser(socket);
             this.inviteProject(socket);
             this.createActivity(socket);
-            socket.on('/test', () => {
-                console.log("test");
-            })
+            socket.on('/test', (data) => {
+                console.log("test", data );
+            });
+            this.disconnectSocket(socket);
         });
     }
 
@@ -49,15 +51,7 @@ class SocketServer {
                         message: data.message
                     });
 
-                    const result = await this.userModel.getUserByName(key);
-                    console.log(result[0].email);
-                    const options = {
-                        from: 'Remitente',
-                        to: result[0].email,
-                        subject: 'Gestion CIE - notificaciones',
-                        text: data.message
-                    };
-                    this.email.sendEmail(options);
+                    await this.sendEmail(data, key);
                     this.socket.sockets.connected[value].emit("/notification", response)
                 }
             });
@@ -76,21 +70,47 @@ class SocketServer {
                         image: data.image,
                         message: data.message
                     });
-                    const result = await this.userModel.getUserByName(key);
-                    console.log(result[0].email);
-                    const options = {
-                        from: 'Remitente',
-                        to: result[0].email,
-                        subject: 'Gestion CIE - notificaciones',
-                        text: data.message
-                    };
-                    this.email.sendEmail(options);
+                    await this.sendEmail(data, key);
                     this.socket.sockets.connected[value].emit("/notification", response)
 
                 }
             });
             console.log(data);
         });
+    }
+
+    disconnectSocket(socket) {
+        socket.on('disconnect', () => {
+            console.log("disconnect >>>> " , socket.id);
+            this.usersActives.forEach((value, key) => {
+                console.log("users  >>>> " , this.usersActives);
+                if(value == socket.id) {
+                    console.log("equals");
+                    this.usersActives.delete(key);
+
+                }
+            });
+        });
+    }
+
+
+
+    async sendEmail(data, key) {
+
+        console.log("data ", data, " key ", key);
+        const toEmail = await this.getEmail(key);
+        console.log("to" , toEmail);
+        const options = {
+            to: toEmail,
+            content: data.message
+        };
+        this.email.setOptions(options);
+        this.email.sendEmail();
+    }
+
+    async getEmail(key){
+        const result = await this.userModel.getUserByName(key);
+        return result[0].email;
     }
 
 }

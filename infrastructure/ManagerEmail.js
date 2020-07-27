@@ -14,13 +14,24 @@ class ManagerEmail {
         });
     }
 
-    sendEmail(options){
-        this.transporter.sendMail(options, (error, info)=>{
+    sendEmail(){
+        console.log("options >>>> ", this.options);
+        this.transporter.sendMail(this.options, (error, info)=>{
             if(error)
                 console.error(error);
             
             console.log("send >>>> ", info);
         });
+        
+    }
+
+    setOptions(options){
+        this.options = { 
+           from:  'Remitente',
+           to: options.to,
+           subject: 'Gestion CIE - notificaciones',
+           text: options.content
+        };
     }
 }
 
