@@ -1,24 +1,37 @@
+const NotificationModel = require('./../models/notificationModel').NotificationModel;
+const notificationModel = new NotificationModel();
+
 class Notification {
 
-    setNotification(data){
+    setNotification(data, to){
         this.notification = {
-            to : data.to,                     
-            from : data.to,
+            to : to,                     
+            from : data.from,
             message : data.message,
-            link : data.link,
+            link : 'link',
             image: data.image
         };
+        console.log("notification >>> ", this.notification);
     }
 
-    getNotification() {
-        return {
-            to: this.to, from: this.from, message: this.message
-        }
+    async getNotifications(id) {
+        return await notificationModel.getNotificationsByIdUsersTo(id);
     }
 
-    searchUsers(){
-        
-    }   
+    async saveNotification() {
+        const response = await notificationModel.createNotification(this.notification);
+        console.log("save notification >>>> ", response);
+    }
+
+    async getAmountNotifications(id){
+        return  await notificationModel.getAmountNotifications(id);
+    }
+
+    getNotificationInMen(){
+        return new Array(this.notification);
+    }
+
+
 
 }
 

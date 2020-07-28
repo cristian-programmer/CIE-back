@@ -229,7 +229,8 @@ class StructureDB {
             idnotifications INT NOT NULL AUTO_INCREMENT,
             idUsersTo INT NOT NULL,
             message VARCHAR(200) NOT NULL,
-            idUsersFrom INT NOT NULL,
+            userFrom VARCHAR(50) NOT NULL,
+            image VARCHAR (200) NOT NULL,
             link VARCHAR(100) NULL,
             PRIMARY KEY (idnotifications))`).then(res => {
                 console.info('create table notifications');

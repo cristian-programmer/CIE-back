@@ -1,7 +1,7 @@
 const Socket = require('socket.io');
 const UserModel = require('../models/userModel').UserModel;
 const ManagerEmail = require('./ManagerEmail').ManagerEmail;
-
+const Notification = require('./Notification').Notification;
 
 const PORT = 4000;
 class SocketServer {
@@ -12,6 +12,7 @@ class SocketServer {
         this.userModel = new UserModel();
         this.usersActives = new Map();
         this.email = new ManagerEmail();
+        this.notification = new Notification();
     }
 
     socketServerOn(){
@@ -23,6 +24,8 @@ class SocketServer {
             socket.on('/test', (data) => {
                 console.log("test", data );
             });
+            this.getNotifications(socket);
+            this.getAmountNotifications(socket);
             this.disconnectSocket(socket);
         });
     }
@@ -45,14 +48,15 @@ class SocketServer {
                 console.log(` value ${value} key ${key}`);
                 if(names.includes(key)){
                     console.info('include', key);
-                    const response = new Array({
-                        from: data.from,
-                        image: data.image,
-                        message: data.message
-                    });
+
+                    const user = await this.getDataUserTo(key);
+                    this.notification.setNotification(data, user.id);
+                    this.notification.saveNotification();
 
                     await this.sendEmail(data, key);
-                    this.socket.sockets.connected[value].emit("/notification", response)
+                    this.socket.sockets.connected[value].emit("/notification", 
+                    this.notification.getNotificationInMen());
+                    this.sendAmountNotifications(value, user.id);
                 }
             });
         });
@@ -65,18 +69,44 @@ class SocketServer {
                 console.log(` value ${value} key ${key}`);
                 if(names.includes(key)){
                     console.info('include', key);
-                    const response = new Array({
-                        from: data.from,
-                        image: data.image,
-                        message: data.message
-                    });
+
+                    const user = await this.getDataUserTo(key);
+                    this.notification.setNotification(data, user.id);
+                    this.notification.saveNotification();
+
                     await this.sendEmail(data, key);
-                    this.socket.sockets.connected[value].emit("/notification", response)
+                   
+                    this.socket.sockets.connected[value].emit("/notification",
+                    this.notification.getNotificationInMen())
+                    this.sendAmountNotifications(value, user.id);
 
                 }
             });
             console.log(data);
         });
+    }
+
+    getNotifications(socket){
+        socket.on('/get/notifications', async (data) => {
+            console.log("my id >>>> ", data.id);
+            const result = await this.notification.getNotifications(data.id);
+            console.log(result);
+            socket.emit('/notifications', result);
+        });
+    }
+
+    async getAmountNotifications(socket){
+        socket.on('/amountNotifications', async (data) =>{
+            const result = await this.notification.getAmountNotifications(data.id);
+            console.log("amount >>>> ", result);
+            socket.emit('/get/amountNotifications', result)
+        }); 
+    }
+
+    async sendAmountNotifications(value, id){
+        const result = await this.notification.getAmountNotifications(id);
+        console.log("send in mem >>>> ", result);
+        this.socket.sockets.connected[value].emit('/get/amountNotifications', result);
     }
 
     disconnectSocket(socket) {
@@ -94,11 +124,10 @@ class SocketServer {
     }
 
 
-
     async sendEmail(data, key) {
 
         console.log("data ", data, " key ", key);
-        const toEmail = await this.getEmail(key);
+        const toEmail = await (await this.getDataUserTo(key)).email;
         console.log("to" , toEmail);
         const options = {
             to: toEmail,
@@ -108,11 +137,10 @@ class SocketServer {
         this.email.sendEmail();
     }
 
-    async getEmail(key){
+    async getDataUserTo(key){
         const result = await this.userModel.getUserByName(key);
-        return result[0].email;
+        return {email : result[0].email, id: result[0].idUsers};
     }
-
 }
 
 

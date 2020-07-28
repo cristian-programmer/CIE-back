@@ -7,14 +7,19 @@ class NotificationModel {
         this.database.getConection();
     }
 
-    createNotification(data){
-        const result = this.database.queryCommand(`INSERT INTO mydb.Notifications (idUsersTo, message, idUsersFrom, link)
-        values (${data.idUsersTo}, "${data.message}", ${idUsersFrom}, "link")`);
+    async createNotification(data){
+        const result = await this.database.queryCommand(`INSERT INTO mydb.Notifications (idUsersTo, message, userFrom, image, link)
+        values (${data.to}, "${data.message}", "${data.from}" , "${data.image}" , "link")`);
         return result['affectedRows'] == 1 ? 'created' : 'not-create';
     }
 
-    getNotificationsByIdUsersTo() {
-        return this.database.queryCommand(`SELECT * FROM mydb.Notifications WHERE`)
+    async getNotificationsByIdUsersTo(myId) {
+        return await this.database.queryCommand(`SELECT * FROM mydb.Notifications WHERE idUsersTo=${myId}`);
+    }
+
+    async getAmountNotifications(myId){
+        return await this.database.queryCommand(`SELECT COUNT(*) as amount FROM mydb.Notifications
+         WHERE idUsersTo=${myId}`);
     }
 }
 
