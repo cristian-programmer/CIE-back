@@ -83,6 +83,7 @@ class StructureDB {
             currentAdvisor VARCHAR(45) NOT NULL,
             previusAdvisers VARCHAR(100) NULL,
             methodologicalPhases VARCHAR(100) NOT NULL,
+            entrepreneurs VARCHAR(200) NOT NULL
             PRIMARY KEY (idProject))`).then(res =>{ console.info('create table project')})
         .catch(error =>{console.error(error)})
     }
