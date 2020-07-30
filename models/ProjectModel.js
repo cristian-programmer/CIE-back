@@ -1,38 +1,37 @@
 const { response } = require('express');
 
 const Database = require('../infrastructure/ManagerConnection').Connection;
-//const S3 = require('../infrastructure/ManagerS3File').ManagerS3File;
-const PATH_CLIENT = 'http://localhost:3000/';
 
 class ProjectModel {
 
-    constructor(data, type){
+    constructor(){
 
         this.database = new Database();
         this.database.getConection();
-        //console.log("dataaaaaa",   data, " ", type);
-        if(data != undefined) {
-            if(type == 'project') {
-                
-                this.projectName = data.nameProyect;
-                this.currentAdvisor = data.nameAsesor;
-                this.previusAdvisers = data.tagsAdvisers;
-                this.methodologicalPhases = data.tagsmethodologies;
-                this.entrepreneurs = data.value;
-
-            }else if (type == 'activity'){
-                console.log("data", data);
-                this.nameActivity = data.nameActivity;
-                this.responsables = data.responsables;
-                this.state = data.state;
-                this.executionWeek = data.week;
-                this.phase = data.phase;
-                this.id = data.id;
-                this.description = data.description;
-                this.resources = data.resources;
-            }
-        }
     }
+
+    setActivity(data){
+        this.nameActivity = data.nameActivity;
+        this.responsables = data.responsables;
+        this.state = data.state;
+        this.executionWeek = data.week;
+        this.phase = data.phase;
+        this.id = data.id;
+        this.description = data.description;
+        this.resources = data.resources;
+    }
+
+    setProject(data){
+        this.projectName = data.nameProyect;
+        this.currentAdvisor = data.nameAsesor;
+        this.previusAdvisers = data.tagsAdvisers;
+        this.methodologicalPhases = data.tagsmethodologies;
+        this.entrepreneurs = data.Entre;
+
+    }
+
+
+
     async getAllEntre(){         
         return await this.database.queryCommand(`SELECT * FROM mydb.Users 
         WHERE role="entrepreneur"`);    
@@ -43,10 +42,8 @@ class ProjectModel {
     }
 
 
-    async getListProject(){
-        console.log("ooooo", this.currentAdvisor);
-        
-        return await this.database.queryCommand(`SELECT * FROM mydb.Projects where currentAdvisor= "${this.currentAdvisor}"`);
+    async getListProject(nameAsesor){ 
+        return await this.database.queryCommand(`SELECT * FROM mydb.Projects where currentAdvisor= "${nameAsesor}"`);
     }
   
      async getPorjectsByCurrentAvisor(name){
@@ -104,8 +101,8 @@ class ProjectModel {
     }
 
 
-    createResource(){
-
+    setResource(resource){
+        this.resources = resource;
     }
 
     async getAllParticipants(){

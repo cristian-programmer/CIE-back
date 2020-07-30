@@ -1,29 +1,28 @@
 let app = require('express');
-const { response } = require('express');
 let router = app.Router();
+
 const ProjectModel = require('./../models/ProjectModel').ProjectModel;
 const UserModel = require('./../models/userModel').UserModel; 
 const ManagerFile = require('./../infrastructure/ManagerFilesServer').ManagerFileServer;
-const moment = require('moment');
+
 const fileServer = new ManagerFile();
-fileServer.saveFileInPathPublic();
-const t_project='project', t_activity="activity";
+fileServer.prepareStorageS3();
+const project  = new ProjectModel();
+let  urlResource = null;
 
 router.get('/getEntrepreneurs', async (req, res) =>{
-    let Entre = new ProjectModel();
-    const response = await Entre.getAllEntre();
+    const response = await project.getAllEntre();
      res.json({result: response});
      
  });
 
  router.post('/getProjects2', async (req, res) =>{
-    let project = new ProjectModel(req.body, t_project);
-    const response = await project.getListProject(req.query.nameAsesor);
+    console.log(req.body);
+    const response = await project.getListProject(req.body.nameAsesor);
      res.json({result: response});
  });
 
 router.get('/getProjects', async (req, res) =>{
-   const project = new ProjectModel();
    const typeUser =  req.query.type;
    const name = req.query.name;
 
@@ -78,17 +77,15 @@ router.get('/getProjects', async (req, res) =>{
 router.post('/createProject', async (req, res) =>{
     console.log("asesor", req.body.nameAsesor);
     
-    const project = new ProjectModel(req.body, t_project);
+    project.setProject(req.body);
     const response = await project.create();
     res.json({result: response});
 
 });
 
 router.get('/getProject', async (req, res)=>{
-    let project = new ProjectModel();
-    let user = new UserModel();
-
     console.log(req.query.id);
+
     const response = await project.getProjectById(req.query.id);
     const phases = (response[0].methodologicalPhases).split(',');
 
@@ -125,7 +122,7 @@ async function findMethodology( phases, project, id) {
 
 async function getCountComments(phase, id, project) {
     const ids = await project.getIdActivities(phase, id);
-    console.log("ids >", ids);
+    console.log("ids >>>> ", ids);
     let amount = 0;
     for(let i=0; i < ids.length; i++) {
         temp = await project.getCommentsByIdActivity(ids[i].idActivities);
@@ -138,8 +135,8 @@ async function getCountComments(phase, id, project) {
 }
 
 router.get('/getParticipans', async (req, res)=>{
-    console.log("participans ", req.query.id);
-    const  project = new ProjectModel();
+    console.log("participans >>>> ", req.query.id);
+   
     let names = [];
     let response = await project.getParticipans(req.query.id);
     let entrepreneurs = response[0].entrepreneurs.split(',');
@@ -164,29 +161,29 @@ router.get('/getParticipans', async (req, res)=>{
 
 router.post('/deleteProject', async (req, res)=>{
     console.log(req.body.id);
-    const  proyect = new ProjectModel();
-    const response = await proyect.deleteProject(req.body.id);
+
+    const response = await project.deleteProject(req.body.id);
     res.json({result: response});
 });
 
 router.post('/editProject', async (req, res)=>{
-    console.log("request",req.body);
+    console.log("request >>>>",req.body);
     
-    let project = new ProjectModel(req.body,t_project);
+    project.setProject(req.body);
     const response = await project.editProject(req.body.id);
     res.json({result: response});
 });
 
 
 router.get('/getActivityByProjectAndPhase', async (req, res )=> {
-    let project = new ProjectModel();
+   
     let activities = [];
     let names = [];
     const response = await project.getActiviesByProject(req.query.id, req.query.phase);
     console.log("get activitivities >>>", response);
     if(response.length > 0){
         let nameshort='';  
-        for(let i=0; i < response.length; i++) { // 2
+        for(let i=0; i < response.length; i++) { 
           
             console.log(response[i].responsables);
             const responsables = response[i].responsables.split(',')
@@ -223,14 +220,16 @@ router.get('/getActivityByProjectAndPhase', async (req, res )=> {
 });
 
 router.post('/createActivity', async (req, res)=>{
-    console.log("ACTIVITY_  ", req.body);
-    const project = new ProjectModel(req.body, t_activity);
+    console.log("activity >>>>  ", req.body);
+   
+    project.setActivity(req.body);
+    project.setResource(urlResource);
     const response = await project.createActivityByProject();
     res.json({result: response});
 });
 
 router.get('/getAmountActivities', async (req, res)=>{
-    const project = new ProjectModel();
+   
     const phase = req.query.phase;
     console.log(phase);
     const response = await project.getActivitiesByPhase(phase);
@@ -240,14 +239,14 @@ router.get('/getAmountActivities', async (req, res)=>{
 });
 
 router.post('/comment/add', async (req, res)=>{
-    const project = new ProjectModel();
+    
     console.log("commentary ", req.body);
     project.createCommentary(req.body);
 });
 
 
 router.get('/getComments', async (req, res) => {
-    const project = new ProjectModel();
+   
     const user = new UserModel();
     console.log("idActivity: " , req.query.idActivity);
     const response = await project.getCommentsIdUsers(req.query.idActivity);
@@ -271,7 +270,7 @@ router.get('/getComments', async (req, res) => {
 
 router.post('/createAssignment', async (req, res) => {
     console.log(req.body);
-    const project = new ProjectModel();
+  
     const exists =  await project.getAssignmentByAll(req.body);
     console.log("exists: ", exists);
     let response;
@@ -288,7 +287,7 @@ router.post('/createAssignment', async (req, res) => {
 });
 
 router.get('/getAssignment', async (req, res)=>{
-    const project = new ProjectModel();
+   
     const user = new UserModel();
     if(req.query.id != "" && req.query.phase != "") {
         try {
@@ -319,15 +318,18 @@ router.get('/getAssignment', async (req, res)=>{
     }
 });
 
-router.post('/uploadFile', fileServer.middleware().single('uploadFile'), (req, res)=>{
-    console.log("uploadFile", req.file.filename);
+router.post('/uploadFile', fileServer.middleware().single('uploadFile'), async (req, res)=>{
+    console.log("uploadFile", req.file.originalname);
+    const uploaded = await fileServer.uploadS3File(req.file, 'resource');
+    console.log("uploaded >>>>", uploaded);
+    urlResource = uploaded.Location;
     res.json({
-        image:  req.file.path
-    })
+        resource:  req.file.path
+    });
 });
 
 router.get('/getActivity', async (req, res) =>{
-    const project = new ProjectModel();
+  
     console.log("here >>>", req.query.id);
     const response = await project.getActivityById(req.query.id);
     res.json({
@@ -336,7 +338,7 @@ router.get('/getActivity', async (req, res) =>{
 });
 
 router.get('/getAmountActivities/graphs', async (req, res) => {
-    const project = new ProjectModel();
+   
     const response = await project.getProjectById(req.query.idProject);
     const phases = (response[0].methodologicalPhases).split(',');
     console.log("phases >> ", phases);
@@ -357,7 +359,7 @@ router.get('/getAmountActivities/graphs', async (req, res) => {
 });
 
 router.get('/getAmountStateActivities', async (req, res) =>{
-    const project = new ProjectModel();
+    
     const response = await project.getAllActivitiesByIdProject(req.query.idProject);
     let labels = new Array('En ejecución' , 'Terminado', 'Detenido');
     let amount1 = 0;
@@ -385,14 +387,14 @@ router.get('/getAmountStateActivities', async (req, res) =>{
 });
 
 router.post('/updateRate', async (req, res) =>{
-    const project = new ProjectModel();
+   
     console.log("updateRate >>> ", req.body);
     const response =  await project.updateRateActivity(req.body);
     res.json({result: response});
 });
 
 router.get('/getAmountRate', async (req, res) =>{
-    const project = new ProjectModel();
+   
     const response = await project.getAllActivitiesByIdProject(req.query.idProject);
     const labels = new Array('Malo', 'Regular', 'Bueno', 'Excelente');
     let bad = 0;
@@ -423,7 +425,7 @@ router.get('/getAmountRate', async (req, res) =>{
 });
 
 router.get('/phases',async (req, res) =>{
-    const project = new ProjectModel();
+    
     const response =  await project.getPhases(req.query.id);
     res.json({
         result: response[0]
@@ -431,7 +433,7 @@ router.get('/phases',async (req, res) =>{
 });
 
 router.get('/activities/gantt', async (req, res) =>{
-    const project = new ProjectModel();
+   
     const response = await project.getActiviesByProject(req.query.id, req.query.phase);
     res.json({result: response});
 });

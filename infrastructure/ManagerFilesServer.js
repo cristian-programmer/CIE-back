@@ -47,14 +47,17 @@ class ManagerFileServer{
         });
     }
 
-    uploadS3File(file) {
+    uploadS3File(file, optionalFolder) {
         return new Promise ((resolve, reject)=>{
             let myFile = file.originalname.split('.');
             const fileType = myFile[myFile.length -1];
-    
+            const key = optionalFolder != undefined ? 
+                `${optionalFolder}/${myFile[0]}.${fileType}` : `${uuid.v4()}.${fileType}`;
+            
+            console.log('key s3 >>>> ', key);
             const params = {
                Bucket: process.env.AWS_BUCKET,
-               Key: `${uuid.v4()}.${fileType}`,
+               Key: key,
                Body: file.buffer
             }
             S3.upload(params, (error, data) =>{
