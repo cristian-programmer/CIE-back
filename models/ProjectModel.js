@@ -95,7 +95,7 @@ class ProjectModel {
     async createActivityByProject(){
         const result =  await this.database.queryCommand(`INSERT INTO mydb.Activities 
         (nameActivity, responsables, state, executionWeek, phase, idProject, description, resources) values ("${this.nameActivity}",
-       "${this.responsables}", "${this.state}", "${this.executionWeek}", "${this.phase}", ${this.id}, "${this.description}", "${PATH_CLIENT}${this.resources}")`);
+       "${this.responsables}", "${this.state}", "${this.executionWeek}", "${this.phase}", ${this.id}, "${this.description}", "${this.resources}")`);
 
         return result['affectedRows'] == 1 ? 'created' :  'not-created';
     }
@@ -177,8 +177,15 @@ class ProjectModel {
     }
 
     async getPhases(id) {
-        return this.database.queryCommand(`SELECT methodologicalPhases FROM mydb.Projects
+        return await this.database.queryCommand(`SELECT methodologicalPhases FROM mydb.Projects
          WHERE idProject=${id}`)
+    }
+
+    async updatePercentaje(data){
+        const result = await this.database.queryCommand(`UPDATE mydb.Activities SET percentaje=${data.percentaje}
+        WHERE idActivities=${data.id}`)
+
+        return result['changedRows'] == 1 ? 'edited' : 'not-edited';
     }
 
 

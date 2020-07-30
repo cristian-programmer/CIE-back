@@ -101,7 +101,8 @@ class StructureDB {
              idProject INT NOT NULL,
              description VARCHAR(200) NULL,
              rate INT NULL,
-            PRIMARY KEY (idActivities))`).then(res =>{ console.info('create table activities')})
+             percentaje INT NULL,
+             PRIMARY KEY (idActivities))`).then(res =>{ console.info('create table activities')})
         .catch(error =>{console.error(error)})
     }
 

@@ -210,7 +210,9 @@ router.get('/getActivityByProjectAndPhase', async (req, res )=> {
                 description: response[i].description,
                 state: response[i].state,
                 phase: response[i].phase,
-                profile: names
+                profile: names,
+                percentaje : response[i].percentaje
+
             });
             names = [];
         }
@@ -436,6 +438,15 @@ router.get('/activities/gantt', async (req, res) =>{
    
     const response = await project.getActiviesByProject(req.query.id, req.query.phase);
     res.json({result: response});
+});
+
+
+router.post('/percentaje', async (req, res) => {
+    console.log('percentaje >>>> ', req.body);
+    const response = await project.updatePercentaje(req.body);
+    res.json({
+        result: response
+    });
 });
 
 module.exports =  router;
