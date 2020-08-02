@@ -188,6 +188,19 @@ class ProjectModel {
         return result['changedRows'] == 1 ? 'edited' : 'not-edited';
     }
 
+    async updateState(data){
+        const result = await this.database.queryCommand(`UPDATE mydb.Activities SET state=${data.state}
+        WHERE idActivities=${data.id}`);
+
+        return result['changedRows'] == 1 ? 'edited' : 'not-edited';
+    }
+
+    async deleteActivity(id){
+        const result = await this.database.queryCommand(`DELETE FROM mydb.Activities WHERE idActivities = ${id}`);
+        console.log(result);
+        return result['affectedRows'] == 1 ? 'erased' :  'not-erased';
+    }
+
 
 }
 

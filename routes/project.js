@@ -449,4 +449,20 @@ router.post('/percentaje', async (req, res) => {
     });
 });
 
+router.post('/state', async (req, res) =>{
+    console.log('state >>>', req.body);
+
+    const response = await project.updateState(req.body);
+    res.json({
+        result: response
+    });
+});
+
+router.post('/deleteActivity', async (req, res)=>{
+    const response = await project.deleteActivity(req.body.id);
+    res.json({
+        result: response
+    });
+}); 
+
 module.exports =  router;
