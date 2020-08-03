@@ -56,7 +56,10 @@ class ProjectModel {
         const result = await this.database.queryCommand(`INSERT INTO mydb.Projects (projectName, currentAdvisor, 
             previusAdvisers, methodologicalPhases, entrepreneurs ) VALUES("${this.projectName}", "${this.currentAdvisor}", 
             "${this.previusAdvisers}", "${this.methodologicalPhases}", "${this.entrepreneurs}")`);
-
+        
+            console.log(`INSERT INTO mydb.Projects (projectName, currentAdvisor, 
+            previusAdvisers, methodologicalPhases, entrepreneurs ) VALUES("${this.projectName}", "${this.currentAdvisor}", 
+            "${this.previusAdvisers}", "${this.methodologicalPhases}", "${this.entrepreneurs}")`)
          return result['affectedRows'] == 1 ? 'created' :  'not-created';
     }
 
@@ -189,7 +192,7 @@ class ProjectModel {
     }
 
     async updateState(data){
-        const result = await this.database.queryCommand(`UPDATE mydb.Activities SET state=${data.state}
+        const result = await this.database.queryCommand(`UPDATE mydb.Activities SET state="${data.state}"
         WHERE idActivities=${data.id}`);
 
         return result['changedRows'] == 1 ? 'edited' : 'not-edited';

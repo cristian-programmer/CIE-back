@@ -26,6 +26,7 @@ class SocketServer {
             });
             this.getNotifications(socket);
             this.getAmountNotifications(socket);
+            this.deleteActivity(socket);
             this.disconnectSocket(socket);
         });
     }
@@ -107,6 +108,25 @@ class SocketServer {
         const result = await this.notification.getAmountNotifications(id);
         console.log("send in mem >>>> ", result);
         this.socket.sockets.connected[value].emit('/get/amountNotifications', result);
+    }
+
+    deleteActivity(socket){
+        socket.on('/deleteActivity',  (data) =>{
+            console.log('delete activity >>>>', data);
+            const names = data.to; 
+            this.usersActives.forEach( async (value, key) => {
+                if(names.includes(key)){
+                    const user = await this.getDataUserTo(key);
+                    this.notification.setNotification(data, user.id);
+                    this.notification.saveNotification();
+                
+                    this.socket.sockets.connected[value].emit("/notification", 
+                    this.notification.getNotificationInMen());
+                    this.sendAmountNotifications(value, user.id);
+                }
+            });
+
+        })
     }
 
     disconnectSocket(socket) {
