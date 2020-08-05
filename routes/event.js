@@ -7,13 +7,12 @@ const FileServer = require('../infrastructure/ManagerFilesServer').ManagerFileSe
 const fileServer =  new FileServer();
 fileServer.prepareStorageS3();
 
-// const event = new EventModel();
+const event = new EventModel();
 
 
 router.post('/createEvent',async (req, res)=>{
     console.log(req.body);
     console.log(req.body.date);
-    let event = new EventModel();
     event.setEvent(req.body);
     response = await event.create();
     let id = await event.getLastInsertId();
@@ -22,40 +21,40 @@ router.post('/createEvent',async (req, res)=>{
 });
 
 router.get('/getEvents', async (req, res)=>{
-    let event =  new EventModel();
+   
     response = await event.getAllEvents();
     res.json({result : response});
 }); 
 
 router.post('/deleteEvent', async (req, res)=>{
     console.log(req.body.id);
-    let event = new EventModel();
+   
     response = await event.deleteEvent(req.body.id);
     res.json({result: response});
 });
 
 router.post('/editEvent', async (req, res)=>{
-    let event = new EventModel(req.body);
+    event.setEvent(req.body);
     response = await event.editEvent(req.body.id);
     res.json({result: response});
 });
 
 router.post('/createAttendance', async (req, res)=>{
     console.log(req);
-    let event = new EventModel();
+   
     response = await event.createAttendance(req.body);
     res.json({result: response});
 });
 
 router.post('/createEventStatistics', async (req, res)=>{
-    let event = new EventModel();
+   
     response = await event.createEventStatistics(req.body.idEvent);
     console.log("create statistics ", response);
     res.json({result: response});
 });
 
 router.post('/updateEventStatistics', async (req, res)=>{
-    let event = new EventModel();
+    
     number = await event.getNumberByEvent(req.body.id, req.body.type);
     console.log("number", number);
     if(number.length > 0) {
@@ -72,7 +71,7 @@ router.post('/updateEventStatistics', async (req, res)=>{
 });
 
 router.get('/getEventStatistics', async (req, res)=>{
-    let event = new EventModel();
+   
     let data_statistics = [];
     statistics = await event.getEventStatistcs();
     for(let i=0; i < statistics.length; i ++) {
@@ -99,7 +98,7 @@ router.post('/uploadFile', fileServer.middleware().single('eventFile'), async (r
 });
 
 router.get('/getRegisteredByEvent', async (req, res)=>{ 
-    const event = new EventModel();
+   
     const events = await event.getAllEvents();
     let data = [];
     let labels = [];
