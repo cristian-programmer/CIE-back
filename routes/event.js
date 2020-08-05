@@ -5,13 +5,16 @@ const EventModel = require('./../models/eventModel').EvenModel;
 const FileServer = require('../infrastructure/ManagerFilesServer').ManagerFileServer;
 
 const fileServer =  new FileServer();
-fileServer.saveFileInPathPublic();
+fileServer.prepareStorageS3();
+
+// const event = new EventModel();
 
 
 router.post('/createEvent',async (req, res)=>{
     console.log(req.body);
     console.log(req.body.date);
-    let event = new EventModel(req.body);
+    let event = new EventModel();
+    event.setEvent(req.body);
     response = await event.create();
     let id = await event.getLastInsertId();
 
@@ -85,10 +88,13 @@ router.get('/getEventStatistics', async (req, res)=>{
     res.json({result: data_statistics});
 });
 
-router.post('/uploadFile', fileServer.middleware().single('eventFile'), (req, res)=>{
+router.post('/uploadFile', fileServer.middleware().single('eventFile'), async (req, res)=>{
     console.log("uploadFile", req.file.filename);
+
+    const uploaded = await fileServer.uploadS3File(req.file);
+
     res.json({
-        image:  req.file.path
+        image:  uploaded.Location
     })
 });
 

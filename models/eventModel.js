@@ -14,11 +14,19 @@ class EvenModel {
         }
     }
 
+    setEvent(data){
+
+        this.eventName =  data.nameEvent;
+        this.eventDescription = data.description;
+        this.eventDate =  data.date;
+        this.eventImage = data.eventImage;
+    }
+
     async create(){
         console.log(this.eventName);
         const result = await this.database.queryCommand(`INSERT INTO mydb.Events 
         (eventName, eventDescription, eventDate, eventImage) values ("${this.eventName}", "${this.eventDescription}",
-         "${this.eventDate}" , '${PATH_CLIENT}${this.eventImage}')`);
+         "${this.eventDate}" , "${this.eventImage}")`);
         return result['affectedRows'] == 1 ? 'created' :  'not-created';
     }
 
