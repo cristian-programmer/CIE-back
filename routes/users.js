@@ -5,10 +5,9 @@ const userModel = require('../models/userModel').UserModel;
 const projectModel = require('../models/ProjectModel').ProjectModel;
 const managerFilesServer = require('../infrastructure/ManagerFilesServer').ManagerFileServer;
 
-const PORTCLIENT = 3000;
-
 const jwt = new JsonWebToken();
 const manager = new managerFilesServer();
+const user = new userModel();
 
 manager.prepareStorageS3();
 
@@ -18,15 +17,14 @@ let idProfile = 0;
 router.post('/createUser' ,async (req, res)=>{
   console.log(req.body);
   register = true;
-  let user = new userModel(req.body, register);
+
+  user.setUser(req.body, register);
   response = await user.create();
   res.json({result: response});
 
 });
 
 router.post('/login', async (req, res) => {
-
-  let user = new userModel();
   response = await user.getUser(req.body.username, req.body.password);
   if(response.length > 0) {
     const userdata  = { user: req.body.username, password: req.body.password };
@@ -45,14 +43,12 @@ router.post('/login', async (req, res) => {
 });
 
 router.get('/admin/getAllUsers', async (req, res)=>{
-  let user = new userModel();
   response = await user.getAllUsers();
   res.json({result: response});
 });
 
 router.post('/admin/updateRole', async (req, res)=>{
   console.log(req.body);
-  let user = new userModel();
   response = await user.updateRole(req.body);
   res.json({result: response});
 });
@@ -60,7 +56,6 @@ router.post('/admin/updateRole', async (req, res)=>{
 
 router.post('/writeIdProfile', (req, res) =>{
   console.log(req.body.id);
-
   idProfile = req.body.id;
   res.json({
     result: 'assigned'
@@ -75,7 +70,6 @@ function getKeyUrl(url) {
 
 router.post('/uploadProfile', manager.middleware().single('profile'),  async (req, res)=>{
   console.log(req.body);
-  let user = new userModel();
   let response = null;
   
   const userFound = await user.getUserById(idProfile);
@@ -110,15 +104,10 @@ router.post('/uploadProfile', manager.middleware().single('profile'),  async (re
 });
 
 router.get('/getUserById',  async (req, res)=>{
-  let user = new userModel();
   let project = new projectModel();
-
   response =  await user.getUserById(Number(req.query.id));
 
   participans = await project.getAllParticipants();
-
-
-  // console.log(findUserInAproject(response[0].name, participans));
 
   console.log("getUserById" , response);
   res.json({
@@ -170,7 +159,7 @@ function findUserInAproject(user, project){
 }
 
 router.post('/editUser', async (req, res) => {
-  let user = new userModel();
+
   try {
     response = await user.editUser(req.body);
   res.json({
@@ -183,11 +172,11 @@ router.post('/editUser', async (req, res) => {
 
 
 router.get('/getAllAdvisers', async (req, res) => {
-  const user = new userModel();
+
   const response = await user.getAllUsersByRole();
   res.json({
     result: response
-  })
+  });
 });
 module.exports = router;
  
