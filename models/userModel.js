@@ -8,9 +8,9 @@ class UserModel{
         if(data != undefined){
             this.username = data.username;
             this.password = data.password;
-
+            const role = data.role ? data.role : data.relationship;
             if(register){
-                this.role =  this.assignRole(data.relationship);
+                this.role =  this.assignRole(role);
                 this.name = data.fullname;
                 this.email = data.email;
                 this.relationshipUniversity = data.relationship;
@@ -21,8 +21,8 @@ class UserModel{
 
     assignRole(relationship){
         return ( relationship == 'graduate' || 
-        relationship == 'student' || relationship == 'other') ?
-         'entrepreneur' : 'role-pending';
+        relationship == 'student' || relationship == 'external') ?
+         'entrepreneur' : relationship;
     }
 
     async create(){
