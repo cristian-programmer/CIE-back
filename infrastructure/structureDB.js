@@ -249,7 +249,7 @@ class StructureDB {
             academicProgram VARCHAR(100) NULL,
             incomeBy VARCHAR(100) NULL,
             PRIMARY KEY (idstudent),
-            INDEX idUsers_idx (idUsers ASC) VISIBLE,
+            INDEX idUsers_idx (idUsers ASC),
             CONSTRAINT idUsers
               FOREIGN KEY (idUsers)
               REFERENCES mydb.Users (idUsers)
@@ -264,7 +264,7 @@ class StructureDB {
             universityDegrees VARCHAR(200) NULL,
             experience INT NULL,
             PRIMARY KEY (idAdviser),
-            INDEX id_idx (idUsersAd ASC) VISIBLE,
+            INDEX id_idx (idUsersAd ASC),
             CONSTRAINT idUsersAd
               FOREIGN KEY (idUsersAd)
               REFERENCES mydb.Users (idUsers))`)
