@@ -78,4 +78,33 @@ router.get('/entrepreneursServed', async (req, res) =>{
     });
 });
 
+
+router.get('/entrepreByProgram', async (req, res)=>{
+    let programs = new Map();
+    const students = await tracing.getAcademicPrograms();
+    let data = [];
+    let labels = [];
+
+    for(let i=0; i < students.length; i++){
+        console.log(students[i]);
+        programs.set(i, students[i].academicProgram);
+    }
+
+    for(let value of programs.values()){
+        console.log(value);
+        const amount = await tracing.getAmountProgram(value);
+        console.log(amount);
+        labels.push(value);
+        data.push(amount[0].amount);
+    }
+    
+
+    res.json({
+        labels: labels,
+        data: data
+    });
+
+
+});
+
 module.exports = router;

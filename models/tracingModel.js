@@ -75,6 +75,15 @@ class  TracingModel{
         WHERE  relationshipUniversity='${relationship}'`);
     }
 
+    async getAcademicPrograms(){
+        return await this.database.queryCommand(`SELECT academicProgram FROM mydb.Students`);
+    }
+
+    async getAmountProgram(value){
+        return await this.database.queryCommand(`SELECT COUNT(*) AS amount FROM mydb.Students
+        WHERE  academicProgram='${value}'`);
+    }
+
 }
 
 module.exports = {
