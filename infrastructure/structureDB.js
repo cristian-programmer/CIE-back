@@ -241,6 +241,38 @@ class StructureDB {
             });
     }
 
+    createTableStudents(){
+        this.database.queryCommand(`CREATE TABLE IF NOT EXISTS mydb.Students (
+            idstudent INT NOT NULL AUTO_INCREMENT,
+            idUsers INT NOT NULL,
+            semester INT NULL,
+            academicProgram VARCHAR(100) NULL,
+            incomeBy VARCHAR(100) NULL,
+            PRIMARY KEY (idstudent),
+            INDEX idUsers_idx (idUsers ASC) VISIBLE,
+            CONSTRAINT idUsers
+              FOREIGN KEY (idUsers)
+              REFERENCES mydb.Users (idUsers)
+            )`).then(res => {console.info('create table students')})
+            .catch(error =>{console.error(error)});
+    }
+
+    createTableAdvisers(){
+        this.database.queryCommand(`CREATE TABLE IF NOT EXISTS mydb.Advisers (
+            idAdviser INT NOT NULL AUTO_INCREMENT,
+            idUsersAd INT NOT NULL,
+            universityDegrees VARCHAR(200) NULL,
+            experience INT NULL,
+            PRIMARY KEY (idAdviser),
+            INDEX id_idx (idUsersAd ASC) VISIBLE,
+            CONSTRAINT idUsersAd
+              FOREIGN KEY (idUsersAd)
+              REFERENCES mydb.Users (idUsers))`)
+              .then(res => {console.info('create table Advisers')})
+              .catch(error =>{console.error(error)});
+
+    }
+
     insertModules(){
         this.database.queryCommand(`INSERT INTO mydb.SystemModules (nameModule, role, route, active)
         values ('Inicio', 'assistant', '/admin',  1),
@@ -303,6 +335,8 @@ class StructureDB {
         this.createTableComments();
         this.createTableMethodology();
         this.createTableNotifications();
+        this.createTableStudents();
+        this.createTableAdvisers();
     }
     
 }
