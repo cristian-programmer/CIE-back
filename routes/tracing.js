@@ -57,4 +57,25 @@ router.get('/Statistics', async (req, res) => {
     }
 });
 
+router.get('/entrepreneursServed', async (req, res) =>{
+    const total =  await tracing.getTotal();
+    const pratice = await tracing.getAmountByColumn('1');
+    const gradeOption = await tracing.getAmountByColumn('2');
+    const internationalization = await tracing.getAmountByColumn('3');
+    const extern = await tracing.getAmountByRelationship('external');
+    const graduate = await tracing.getAmountByRelationship('graduate');
+    const labels = new Array('praticas', 'opcion de grado', 
+    'internacionalizacion', 'externo', 'egresado', 'total');
+
+    const data = new Array(pratice[0].amount, 
+        gradeOption[0].amount, internationalization[0].amount,
+        extern[0].amount, graduate[0].amount, total[0].total );
+    console.log(data);
+    console.log(labels);
+    res.json({
+        labels: labels,
+        data: data
+    });
+});
+
 module.exports = router;

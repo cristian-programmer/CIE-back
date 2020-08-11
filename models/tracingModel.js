@@ -58,6 +58,23 @@ class  TracingModel{
         return await this.database.queryCommand(`SELECT COUNT(*) AS 
         amount FROM  mydb.Attendance WHERE idEvent=${id} AND confirmedAssistance=1`)
     }
+
+    async getTotal(){
+        return await this.database.queryCommand(`SELECT COUNT(*) AS total FROM mydb.Users
+        WHERE relationshipUniversity='student' OR relationshipUniversity='external' OR 
+        relationshipUniversity='graduate'`)
+    }
+
+    async getAmountByColumn(type){
+        return await this.database.queryCommand(`SELECT COUNT(*) AS amount FROM mydb.Students
+        WHERE incomeBy=${type}`)
+    }
+
+    async getAmountByRelationship(relationship){
+        return await this.database.queryCommand(`SELECT COUNT(*) AS amount FROM mydb.Users
+        WHERE  relationshipUniversity='${relationship}'`);
+    }
+
 }
 
 module.exports = {

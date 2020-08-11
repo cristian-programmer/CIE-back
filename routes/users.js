@@ -201,5 +201,21 @@ router.post('/adviser', async (req, res) =>{
   });
 });
 
+router.get('/student', async (req, res) =>{
+  console.log('>>>> ', req.query.id);
+  const response = await user.getDataStudent(req.query.id);
+  res.json({
+    result: response
+  });
+});
+
+router.post('/student', async (req, res) =>{
+  console.log(req.body);
+  const response = await user.createStudent(req.body);
+  res.json({
+    result: response
+  });
+});
+
 module.exports = router;
  
