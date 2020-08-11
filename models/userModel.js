@@ -78,6 +78,17 @@ class UserModel{
         return await this.database.queryCommand(`SELECT * FROM mydb.Users WHERE name="${name}"`);
     }
 
+    async createAdviser(data){
+        const result = await this.database.queryCommand(`INSERT INTO mydb.Advisers (idUsersAd, universityDegrees, experience)
+        values (${data.idUsersAd}, "${data.universityDegrees}", ${data.experience})`);
+        
+        return result['affectedRows'] == 1 ? 'created' :  'not-created';
+    }
+
+    async getDatatAdviser(id){
+        return await this.database.queryCommand(`SELECT * FROM mydb.Advisers WHERE idUsersAd=${id}`);
+    }
+
 
 }
 

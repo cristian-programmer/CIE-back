@@ -178,5 +178,28 @@ router.get('/getAllAdvisers', async (req, res) => {
     result: response
   });
 });
+
+router.get('/adviser', async (req, res)=>{
+  console.log(req.query.id);
+  let response = '';
+  try {
+     response = await user.getDatatAdviser(req.query.id);
+  } catch (error) {
+    console.error(error);
+  }
+
+  res.json({
+     result: response
+  });
+});
+
+router.post('/adviser', async (req, res) =>{
+  console.log('>>>> ', req.body);
+  const response  = await user.createAdviser(req.body);
+  res.json({
+    result: response
+  });
+});
+
 module.exports = router;
  
