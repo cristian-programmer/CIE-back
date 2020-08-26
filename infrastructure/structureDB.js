@@ -405,21 +405,21 @@ class StructureDB {
     this.database
       .queryCommand(
         `INSERT INTO mydb.SystemModules (nameModule, role, route, active)
-        values ('Inicio', 'assistant', '/admin',  1),
-         ('Gestion de proyectos', 'adviser', '/admin/management',  1),
-         ('Eventos', 'assistant', '/admin/events',  1),
-         ('Servicios', 'assistant', '/admin/services',  1),
-         ('Calendario', 'assistant', '/admin/calendar',  1),
-         ('Calendario', 'entrepreneur', '/admin/calendar',  1),
-         ('Calendario', 'adviser', '/admin/calendar',  1),
-         ('Calendario', 'administrator', '/admin/calendar',  1),
-         ('Gestion de Proyectos', 'entrepreneur', '/admin/management',  1),
-         ('Configuracion', 'administrator', '/admin/config',  1),
-         ('Config de Proyectos', 'adviser', '/admin/proyect',  1),
-         ('Trazabilidad de eventos', 'assistant', '/admin/eventTraceability',  1),
-         ('Asistencia', 'assistant', '/admin/assistance',  1),
-         ('Traz. de proyectos', 'adviser', '/admin/trazproject/', 1 ),
-         ('Traz. de proyectos', 'administrator', '/admin/trazproject/', 1 )
+        values ('Inicio', 'assistant', '/dashboard',  1),
+         ('Gestion de proyectos', 'adviser', '/dashboard/management',  1),
+         ('Eventos', 'assistant', '/dashboard/events',  1),
+         ('Servicios', 'assistant', '/dashboard/services',  1),
+         ('Calendario', 'assistant', '/dashboard/calendar',  1),
+         ('Calendario', 'entrepreneur', '/dashboard/calendar',  1),
+         ('Calendario', 'adviser', '/dashboard/calendar',  1),
+         ('Calendario', 'administrator', '/dashboard/calendar',  1),
+         ('Gestion de Proyectos', 'entrepreneur', '/dashboard/management',  1),
+         ('Configuracion', 'administrator', '/dashboard/config',  1),
+         ('Config de Proyectos', 'adviser', '/dashboard/proyect',  1),
+         ('Trazabilidad de eventos', 'assistant', '/dashboard/eventTraceability',  1),
+         ('Asistencia', 'assistant', '/dashboard/assistance',  1),
+         ('Traz. de proyectos', 'adviser', '/dashboard/trazproject/', 1 ),
+         ('Traz. de proyectos', 'administrator', '/dashboard/trazproject/', 1 )
        `
       )
       .then((res) => {
