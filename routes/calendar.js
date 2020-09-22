@@ -15,29 +15,41 @@ router.post("/metting", async (req, res) => {
 
 router.get("/metting", async (req, res) => {
   console.log("/metting ", req.query);
-  const response = await calendar.getCalendar(req.query);
+  const idRes = req.query.user;
+  const response = await calendar.getCalendar();
   let meeting = [];
 
   for (let i = 0; i < response.length; i++) {
-    console.log(response[i]);
     const responsable = await userController.getUserNameById(response[i].idRes);
     const guests = await userController.getUserNameById(response[i].idGuests);
+    if (idRes == response[i].idRes || isGuest(response[i].idGuests, idRes)) {
+      meeting.push({
+        idcalendar: response[i].idcalendar,
+        type: response[i].type,
+        title: response[i].title,
+        purpose: response[i].purpose,
+        date: response[i].date,
+        responsable,
+        guests,
+      });
+    }
+  }
 
-    meeting.push({
-      idcalendar: response[i].idcalendar,
-      type: response[i].type,
-      title: response[i].title,
-      purpose: response[i].purpose,
-      date: response[i].date,
-      responsable,
-      guests,
-    });
-
-    console.log("res: ", responsable, " ", guests);
+  function isGuest(list, id) {
+    return list.split(",").includes(id.toString());
   }
 
   res.json({
     result: meeting,
+  });
+});
+
+router.delete("/metting", async (req, res) => {
+  console.log("delete meeting", req.query);
+  const response = await calendar.deleteMeeting(req.query.id);
+  console.log("delete ", response);
+  res.json({
+    result: response,
   });
 });
 

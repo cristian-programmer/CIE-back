@@ -21,6 +21,13 @@ class CalendarModel {
   async getCalendar() {
     return await this.database.queryCommand(`SELECT * FROM mydb.Calendar`);
   }
+
+  async deleteMeeting(id) {
+    const result = await this.database.queryCommand(
+      `DELETE FROM mydb.Calendar where idcalendar=${id}`
+    );
+    return result["affectedRows"] == 1 ? "erased" : "not-erased";
+  }
 }
 
 module.exports = {
