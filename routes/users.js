@@ -78,8 +78,12 @@ router.post(
     console.log("user found  >>>> ", userFound[0].image);
     if (userFound[0].image != null) {
       const key = getKeyUrl(userFound[0].image);
-      const deleted = await manager.deleteS3File(key);
-      console.log("deleted >>>> ", deleted);
+      try {
+        const deleted = await manager.deleteS3File(key);
+        console.log("deleted >>>> ", deleted);
+      } catch (error) {
+        console.log("change of s3 app and this key is invalid", error);
+      }
 
       const uploaded = await manager.uploadS3File(req.file);
       response = await user.updateProfileImage({
