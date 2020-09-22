@@ -2,7 +2,7 @@ const UserModel = require("./../models/userModel").UserModel;
 
 const user = new UserModel();
 
-async function getName(ids) {
+async function getProfile(ids) {
   let names = [];
   console.log("ids", typeof ids);
 
@@ -26,5 +26,5 @@ async function getName(ids) {
 }
 
 module.exports = {
-  getUserNameById: getName,
+  getUserNameById: getProfile,
 };

@@ -13,6 +13,7 @@ var tracingRouter = require("./routes/tracing");
 var projectRouter = require("./routes/project");
 var configRouter = require("./routes/config");
 var calendar = require("./routes/calendar");
+var notification = require("./routes/nofication");
 
 var StructureDB = require("./infrastructure/structureDB").StructureDB;
 var SocketServer = require("./infrastructure/SocketServer").SocketServer;
@@ -41,7 +42,7 @@ function cors(req, res, next) {
       "X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method"
   );
   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
-  // res.header("Allow", "GET, POST, OPTIONS, PUT, DELETE");
+
   next();
 }
 
@@ -61,5 +62,6 @@ app.use("/tracing", tracingRouter);
 app.use("/project", projectRouter);
 app.use("/config", configRouter);
 app.use("/calendar", calendar);
+app.use("/notification", notification);
 
 module.exports = app;
