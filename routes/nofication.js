@@ -21,7 +21,6 @@ router.post("/email", async (req, res) => {
     console.log(notification);
     email.setOptions(notification);
     email.sendEmail();
-    //console.log("data ", data);
     res.json({
       result: "success",
     });

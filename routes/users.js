@@ -42,6 +42,13 @@ router.post("/login", async (req, res) => {
   res.status(200);
 });
 
+router.post("/test", jwt.authorizeRute, (req, res) => {
+  console.log("access to route");
+  res.json({
+    result: "ok",
+  });
+});
+
 router.get("/admin/getAllUsers", async (req, res) => {
   response = await user.getAllUsers();
   res.json({ result: response });
